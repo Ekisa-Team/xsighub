@@ -1,0 +1,57 @@
+{
+  "name": "xsighub",
+  "version": "0.0.0",
+  "description": "Sistema Hub para capturar, transferir y mostrar las firmas de los usuarios en aplicaciones móviles y mobile en tiempo real.",
+  "author": "Ekisa-Team",
+  "license": "ISC",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "npx simple-git-hooks",
+    "server:dev": "pnpm --filter server dev",
+    "server:build": "pnpm --filter server build",
+    "server:serve": "pnpm --filter server serve",
+    "mobile:dev": "pnpm --filter mobile dev",
+    "mobile:build": "pnpm --filter mobile build",    
+    "mobile:test": "pnpm --filter mobile test",
+    "mobile:test:unit": "pnpm --filter mobile test:unit",    
+    "eslint": "eslint .",
+    "eslint:fix": "eslint . --fix",
+    "stylelint": "stylelint **/*.{svelte,vue,tsx,css,pcss,less,scss,sass} --quiet-deprecation-warnings",
+    "stylelint:fix": "stylelint **/*.{svelte,vue,tsx,css,pcss,less,scss,sass} --quiet-deprecation-warnings --fix",
+    "prettier": "prettier --write"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged",
+    "commit-msg": "pnpm commitlint --edit $1"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,vue,svelte}": [
+      "pnpm eslint:fix",
+      "pnpm prettier"
+    ],
+    "*.{svelte,vue,tsx,css,pcss,less,scss,sass}": [
+      "pnpm stylelint:fix",
+      "pnpm prettier"
+    ]
+  },"devDependencies": {
+    "@commitlint/config-conventional": "^17.6.1",
+    "@culur/stylelint-config": "^1.2.0",
+    "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "commitlint": "^17.6.1",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-svelte3": "^4.0.0",
+    "lint-staged": "^13.2.1",
+    "prettier": "^2.8.7",
+    "prettier-plugin-svelte": "^2.10.0",
+    "prettier-plugin-tailwindcss": "^0.2.7",
+    "simple-git-hooks": "^2.8.1",
+    "stylelint": "^15.4.0",
+    "typescript": "^5.0.4",
+    "vite": "^4.2.1",    
+    "vitest": "^0.29.8"
+  }
+}

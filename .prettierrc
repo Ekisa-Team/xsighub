@@ -1,0 +1,24 @@
+{
+    "semi": true,
+    "trailingComma": "all",
+    "singleQuote": true,
+    "singleAttributePerLine": true,
+    "printWidth": 100,
+    "tabWidth": 4,
+    "useTabs": false,
+    "endOfLine": "auto",
+    "plugins": ["prettier-plugin-svelte"],
+    "pluginSearchDirs": ["."],
+    "overrides": [
+        {
+            "files": ["*.md", "*.json", "*.yml", "*.yaml"],
+            "options": {
+                "tabWidth": 2
+            }
+        },
+        {
+            "files": "*.svelte",
+            "options": { "parser": "svelte" }
+        }
+    ]
+}

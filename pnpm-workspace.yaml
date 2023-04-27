@@ -1,0 +1,4 @@
+packages:
+  - docs
+  - "pkg/*"
+  - "examples/*"
