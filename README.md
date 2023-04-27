@@ -1,6 +1,6 @@
 # Xsighub
 
-📝 Sistema Hub para capturar, transferir y mostrar las firmas de los usuarios en aplicaciones móviles y mobile en tiempo real.
+📝 Sistema Hub para capturar, transferir y mostrar las firmas de los usuarios en aplicaciones móviles y web en tiempo real.
 
 ## Requisitos
 
