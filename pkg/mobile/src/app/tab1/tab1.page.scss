@@ -1,0 +1,19 @@
+ion-card {
+    border: solid 1px var(--ion-color-light-shade);
+    box-shadow: none;
+}
+
+ion-grid {
+    height: 100%;
+
+    ion-row:first-of-type {
+        height: 40%;
+    }
+
+    ion-row:last-of-type {
+        align-items: flex-end;
+        height: 60%;
+        background: url('../../assets/shapes.svg') no-repeat center/cover fixed;
+        text-align: center;
+    }
+}
