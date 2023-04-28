@@ -1,12 +1,5 @@
-function init(): void {
-    console.log('init');
-}
+import { sessions } from './sessions';
 
-function pair(): void {
-    console.log('init');
-}
+export const client = { sessions };
 
-export const client = {
-    init,
-    pair,
-};
+client.sessions.create({});
