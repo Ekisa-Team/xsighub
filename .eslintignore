@@ -11,3 +11,12 @@ __generated__
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
+
+# Ignore test coverage
+**/coverage
+
+# Ignore mobile resources
+/pkg/mobile/platforms
+/pkg/mobile/App_Resources
+/pkg/mobile/hooks
+/pkg/mobile/types
