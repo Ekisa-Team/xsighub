@@ -6,4 +6,7 @@ function pair(): void {
     console.log('init');
 }
 
-export const client = { init, pair };
+export const client = {
+    init,
+    pair,
+};

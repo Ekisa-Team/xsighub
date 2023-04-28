@@ -10,10 +10,13 @@
     "server:dev": "pnpm --filter server dev",
     "server:build": "pnpm --filter server build",
     "server:serve": "pnpm --filter server serve",
+    "server:test:unit": "pnpm --filter server test:unit",
+    "server:test:unit:ui": "pnpm --filter server test:unit:ui",
+    "server:test:unit:coverage": "pnpm --filter server test:unit:coverage",
     "mobile:dev": "pnpm --filter mobile dev",
-    "mobile:build": "pnpm --filter mobile build",    
+    "mobile:build": "pnpm --filter mobile build",
     "mobile:test": "pnpm --filter mobile test",
-    "mobile:test:unit": "pnpm --filter mobile test:unit",    
+    "mobile:test:unit": "pnpm --filter mobile test:unit",
     "eslint": "eslint .",
     "eslint:fix": "eslint . --fix",
     "stylelint": "stylelint **/*.{svelte,vue,tsx,css,pcss,less,scss,sass} --quiet-deprecation-warnings",
@@ -33,7 +36,8 @@
       "pnpm stylelint:fix",
       "pnpm prettier"
     ]
-  },"devDependencies": {
+  },
+  "devDependencies": {
     "@commitlint/config-conventional": "^17.6.1",
     "@culur/stylelint-config": "^1.2.0",
     "@types/node": "^18.15.11",
@@ -51,7 +55,7 @@
     "simple-git-hooks": "^2.8.1",
     "stylelint": "^15.4.0",
     "typescript": "^5.0.4",
-    "vite": "^4.2.1",    
+    "vite": "^4.2.1",
     "vitest": "^0.29.8"
   }
 }

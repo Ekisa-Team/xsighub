@@ -17,7 +17,7 @@
 
 2. Ejecutar aplicaciones.
 
-- Server (NestJS): [http://localhost:3000](http://localhost:3000)
+- Server (Fastify): [http://localhost:3000](http://localhost:3000)
 
   ```sh
   pnpm server:dev
@@ -33,27 +33,27 @@
 
 - Angular
 
-   ```sh
-   pnpm examples:angular
-   ```
+  ```sh
+  pnpm examples:angular
+  ```
 
 - Svelte
 
-   ```sh
-   pnpm examples:svelte
-   ```
+  ```sh
+  pnpm examples:svelte
+  ```
 
 - Vue
 
-   ```sh
-   pnpm examples:vue
-   ```
+  ```sh
+  pnpm examples:vue
+  ```
 
 - React
 
-   ```sh
-   pnpm examples:react
-   ```
+  ```sh
+  pnpm examples:react
+  ```
 
 ## Guía de contribución
 
