@@ -1,17 +1,63 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-title>Firma</ion-title>
+
+        <ion-buttons slot="primary">
+            <ion-button
+                fill="solid"
+                color="success"
+                (click)="save()"
+            >
+                Guardar
+            </ion-button>
+        </ion-buttons>
+
+        <ion-buttons slot="secondary">
+            <ion-button
+                fill="clear"
+                shape="round"
+                (click)="undo()"
+            >
+                <ion-icon name="arrow-undo-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+
+        <ion-buttons slot="secondary">
+            <ion-button
+                fill="clear"
+                shape="round"
+                (click)="clear()"
+            >
+                <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+    <canvas #canvas></canvas>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+    <img src="{{ signatureImg }}" />
 </ion-content>
+
+<ion-fab
+    slot="fixed"
+    horizontal="end"
+    vertical="bottom"
+>
+    <ion-fab-button>
+        <ion-icon name="chevron-up-circle"></ion-icon>
+    </ion-fab-button>
+
+    <ion-fab-list side="top">
+        <ion-fab-button>
+            <ion-icon name="document"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button>
+            <ion-icon name="color-palette"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button>
+            <ion-icon name="globe"></ion-icon>
+        </ion-fab-button>
+    </ion-fab-list>
+</ion-fab>

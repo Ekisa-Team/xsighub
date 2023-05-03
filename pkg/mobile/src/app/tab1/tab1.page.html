@@ -4,57 +4,50 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-    <ion-grid class="ion-no-padding">
-        <ion-row>
-            <ion-col class="ion-padding">
-                <ion-text>
-                    <h1>Establecer conexión</h1>
-                </ion-text>
+<ion-content
+    [fullscreen]="true"
+    class="ion-padding"
+>
+    <ion-text>
+        <h1>Establecer conexión</h1>
+    </ion-text>
 
-                <ion-card
-                    color="translucent"
-                    no-border
-                    class="ion-no-margin"
-                >
-                    <ion-card-content>
-                        <ion-input
-                            type="text"
-                            inputmode="numeric"
-                            placeholder="000 000"
-                            fill="solid"
-                            maxlength="6"
-                            counter
-                            [(ngModel)]="pairingCode"
-                        ></ion-input>
-                    </ion-card-content>
+    <ion-card
+        color="translucent"
+        no-border
+        class="ion-no-margin"
+    >
+        <ion-card-content>
+            <ion-input
+                type="text"
+                inputmode="numeric"
+                placeholder="000 000"
+                fill="solid"
+                maxlength="6"
+                counter
+                [(ngModel)]="pairingCode"
+            ></ion-input>
+        </ion-card-content>
 
-                    <ion-button class="ion-margin"> Conectar </ion-button>
-                </ion-card>
-            </ion-col>
-        </ion-row>
+        <ion-button class="ion-margin"> Conectar </ion-button>
+    </ion-card>
 
-        <ion-row>
-            <ion-col class="ion-padding">
-                <ion-button
-                    color="light"
-                    expand="block"
-                    class="ion-margin-vertical"
-                >
-                    <span>
-                        <ion-icon
-                            slot="start"
-                            name="qr-code-outline"
-                        ></ion-icon>
+    <ion-button
+        color="dark"
+        expand="block"
+        class="ion-margin-vertical"
+    >
+        <span>
+            <ion-icon
+                slot="start"
+                name="qr-code-outline"
+            ></ion-icon>
 
-                        Escanear código QR
-                    </span>
-                </ion-button>
+            Escanear código QR
+        </span>
+    </ion-button>
 
-                <ion-text>
-                    <span>v0.1.0</span>
-                </ion-text>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
+    <ion-text>
+        <span>v0.1.0</span>
+    </ion-text>
 </ion-content>

@@ -20,3 +20,4 @@ yarn.lock
 /pkg/mobile/App_Resources
 /pkg/mobile/hooks
 /pkg/mobile/types
+/pkg/mobile/www

@@ -13,7 +13,7 @@
     "server:test": "pnpm --filter server test",
     "server:test:ui": "pnpm --filter server test:ui",
     "server:test:coverage": "pnpm --filter server test:coverage",
-    "mobile:start": "pnpm --filter mobile start",
+    "mobile:dev": "pnpm --filter mobile dev",
     "mobile:build": "pnpm --filter mobile build",
     "mobile:watch": "pnpm --filter mobile watch",
     "mobile:test": "pnpm --filter mobile test",

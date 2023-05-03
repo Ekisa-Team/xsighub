@@ -1,6 +1,6 @@
 /build
 
-# Ignore test coverage 
+# Ignore test coverage
 **/coverage
 
 # Ignore mobile resources
@@ -8,3 +8,4 @@
 /pkg/mobile/App_Resources
 /pkg/mobile/hooks
 /pkg/mobile/types
+/pkg/mobile/www
