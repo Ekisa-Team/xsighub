@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    OnDestroy,
+    OnInit,
+    Renderer2,
+    ViewChild,
+    inject,
+} from '@angular/core';
 import { client, environmentPlugin, type SdkClient } from '@ekisa-xsighub/sdk';
 import { Subject, takeUntil, timer } from 'rxjs';
 
@@ -14,13 +22,13 @@ export const LONG_POLLING_INTERVAL = 3000;
 export class AppComponent implements OnInit, OnDestroy {
     @ViewChild('qrContainer') qrContainer!: ElementRef<HTMLDivElement>;
 
+    renderer = inject(Renderer2);
+
     stopLongPolling$!: Subject<void>;
 
     sdkClient!: SdkClient;
 
     session: any;
-
-    constructor(private renderer: Renderer2) {}
 
     async ngOnInit(): Promise<void> {
         this.sdkClient = await client.init('my-secret', {
