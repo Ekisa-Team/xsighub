@@ -7,7 +7,7 @@ export enum SessionEndpoints {
     createSession = '/sessions',
     pairSession = '/sessions/:pairingKey/connections',
     updateSession = '/sessions/:pairingKey/data',
-    deleteSession = '/sessions/:pairingKey',
+    destroySession = '/sessions/:pairingKey',
 }
 
 export type Session = {
@@ -114,7 +114,7 @@ export const sessions: FastifyPluginAsync = async (fastify): Promise<void> => {
         return reply.send({ updated: updatedSession });
     });
 
-    fastify.delete(SessionEndpoints.deleteSession, async (request, reply) => {
+    fastify.delete(SessionEndpoints.destroySession, async (request, reply) => {
         const { pairingKey } = request.params as FastifyRequest<{
             Params: { pairingKey: string };
         }>['params'];
