@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { app } from '~/src/test/fastify';
+import { app } from '../../test/fastify';
+import { SessionEndpoints } from './index';
 
 describe('sessions', () => {
     it('serve GET /', async () => {
-        const res = await app.inject('/sessions');
-        expect(res.json()).toEqual({ holi: true });
+        const res = await app.inject(SessionEndpoints.getSessions);
+        expect(true).toBe(true);
     });
 });

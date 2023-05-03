@@ -1,18 +1,26 @@
 import { FastifyPluginAsync, FastifyRequest } from 'fastify';
-import { randomUUID } from 'node:crypto';
+import { getClientIp } from 'request-ip';
+import { generateKey } from '../../helpers/codegen';
 
 export enum SessionEndpoints {
     getSessions = '/sessions',
     createSession = '/sessions',
-    updateSession = '/sessions/:sessionId',
-    deleteSession = '/sessions/:sessionId',
+    pairSession = '/sessions/:pairingKey/connections',
+    updateSession = '/sessions/:pairingKey/data',
+    deleteSession = '/sessions/:pairingKey',
 }
 
 export type Session = {
-    id: string;
-    serverKey: string;
-    mobileKey: string;
+    pairingKey: string;
+    connection: SessionConnection;
     data: SessionData;
+};
+
+export type SessionConnection = {
+    clientIp: string;
+    userAgent: string;
+    isPaired: boolean;
+    pairedAt?: Date;
 };
 
 export type SessionData = {
@@ -26,58 +34,101 @@ export const sessions: FastifyPluginAsync = async (fastify): Promise<void> => {
         return reply.send({ sessions: Array.from(activeSessions) });
     });
 
-    fastify.post(SessionEndpoints.createSession, async (_request, reply) => {
-        const sessionId = randomUUID();
+    fastify.post(SessionEndpoints.createSession, async (request, reply) => {
+        const pairingKey = generateKey(6).toString();
 
         const session: Session = {
-            id: sessionId,
-            serverKey: randomUUID(),
-            mobileKey: randomUUID(),
+            pairingKey,
+            connection: {
+                clientIp: getClientIp(request) ?? '0.0.0.0',
+                userAgent: request.headers['user-agent'] || '',
+                isPaired: false,
+            },
             data: {
                 signature: '',
             },
         };
 
-        activeSessions.set(sessionId, session);
+        activeSessions.set(pairingKey, session);
 
-        return reply.status(201).send(session);
+        return reply.status(201).send({ created: session });
+    });
+
+    fastify.patch(SessionEndpoints.pairSession, async (request, reply) => {
+        const { pairingKey } = request.params as FastifyRequest<{
+            Params: { pairingKey: string };
+        }>['params'];
+
+        const sessionToUpdate = activeSessions.get(pairingKey);
+
+        if (!sessionToUpdate) {
+            return reply
+                .status(404)
+                .send({ message: `Session with the pairing key ${pairingKey} wasn't found.` });
+        }
+
+        const updatedSession: Session = {
+            ...sessionToUpdate,
+            connection: {
+                ...sessionToUpdate.connection,
+                isPaired: true,
+                pairedAt: new Date(),
+            },
+        };
+
+        activeSessions.set(pairingKey, updatedSession);
+
+        return reply.send({ paired: updatedSession });
     });
 
     fastify.patch(SessionEndpoints.updateSession, async (request, reply) => {
-        const { sessionId } = request.params as FastifyRequest<{
-            Params: { sessionId: string };
+        const { pairingKey } = request.params as FastifyRequest<{
+            Params: { pairingKey: string };
         }>['params'];
 
         const data = request.body as FastifyRequest<{
             Body: SessionData;
         }>['body'];
 
-        const sessionToUpdate = activeSessions.get(sessionId);
+        const sessionToUpdate = activeSessions.get(pairingKey);
 
         if (!sessionToUpdate) {
-            return reply.status(404).send({ message: `Session with ID ${sessionId} wasn't found` });
+            return reply
+                .status(404)
+                .send({ message: `Session with the pairing key ${pairingKey} wasn't found.` });
         }
 
-        const updatedSession: Session = { ...sessionToUpdate, data };
+        if (!sessionToUpdate.connection.isPaired) {
+            return reply.status(400).send({
+                message: `Devices are not paired yet. Make sure to pair them before proceeding further.`,
+            });
+        }
 
-        activeSessions.set(sessionId, updatedSession);
+        const updatedSession: Session = {
+            ...sessionToUpdate,
+            data,
+        };
 
-        return reply.send(updatedSession);
+        activeSessions.set(pairingKey, updatedSession);
+
+        return reply.send({ updated: updatedSession });
     });
 
     fastify.delete(SessionEndpoints.deleteSession, async (request, reply) => {
-        const { sessionId } = request.params as FastifyRequest<{
-            Params: { sessionId: string };
+        const { pairingKey } = request.params as FastifyRequest<{
+            Params: { pairingKey: string };
         }>['params'];
 
-        const sessionToDelete = activeSessions.get(sessionId);
+        const sessionToDelete = activeSessions.get(pairingKey);
 
         if (!sessionToDelete) {
-            return reply.status(404).send({ message: `Session with ID ${sessionId} wasn't found` });
+            return reply
+                .status(404)
+                .send({ message: `Session with the pairing key ${pairingKey} wasn't found.` });
         }
 
-        activeSessions.delete(sessionId);
+        activeSessions.delete(pairingKey);
 
-        return reply.send({ sessionId });
+        return reply.send({ deleted: sessionToDelete });
     });
 };
