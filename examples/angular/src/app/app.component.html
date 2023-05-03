@@ -1,0 +1,138 @@
+<header class="h-[70px] bg-zinc-950 text-zinc-200 shadow-xl">
+    <div class="mx-auto flex h-full max-w-screen-lg items-center justify-between px-6">
+        <h1 class="text-3xl font-semibold">Xsighub</h1>
+
+        <ng-container *ngIf="session">
+            <div class="flex items-center gap-6">
+                <button
+                    type="button"
+                    class="inline-flex items-center rounded-md bg-red-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-red-400"
+                    (click)="destroySession()"
+                >
+                    Destruir sesión
+                </button>
+            </div>
+        </ng-container>
+    </div>
+</header>
+
+<div class="mx-auto my-12 max-w-screen-lg px-6">
+    <ng-container *ngIf="session; else noSession">
+        <section class="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
+            <div class="rounded-xl border-2 border-dashed">
+                <div
+                    #qrContainer
+                    class="h-auto max-w-xs"
+                ></div>
+            </div>
+
+            <div class="connection rounded-xl border-2 border-dashed p-12 lg:col-span-2">
+                <h3 class="mb-6 text-xl font-medium">Conexión</h3>
+
+                <ul class="flex flex-col gap-y-3">
+                    <li class="rounded-xl border-l-8 border-zinc-200 bg-zinc-100 p-3">
+                        <span class="text-zinc-500"> Código </span>
+                        <span class="block text-6xl text-indigo-600">
+                            {{ session.pairingKey }}
+                        </span>
+                    </li>
+                    <li class="rounded-xl border-l-8 border-zinc-200 bg-zinc-100 p-3">
+                        <span class="text-zinc-500"> IP (Cliente) </span>
+                        <span class="block text-zinc-950">
+                            {{ session.connection?.clientIp }}
+                        </span>
+                    </li>
+                    <li class="rounded-xl border-l-8 border-zinc-200 bg-zinc-100 p-3">
+                        <span class="text-zinc-500"> User-Agent </span>
+                        <span class="block text-zinc-950">
+                            {{ session.connection?.userAgent }}
+                        </span>
+                    </li>
+                    <ng-container *ngIf="session.connection?.isPaired; else notPaired">
+                        <li
+                            *ngIf="session.connection?.isPaired"
+                            class="rounded-xl border-l-8 border-zinc-200 bg-zinc-100 p-3"
+                        >
+                            Fecha de vinculación
+
+                            <span class="block text-zinc-950">
+                                {{ session.connection?.pairedAt | date : 'long' }}
+                            </span>
+                        </li>
+                    </ng-container>
+                    <ng-template #notPaired>
+                        <li class="rounded-xl border-l-8 border-zinc-200 bg-zinc-100 p-3">
+                            <span class="relative mr-3 inline-flex h-3 w-3">
+                                <span
+                                    class="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-700"
+                                >
+                                </span>
+                            </span>
+
+                            <span class="text-zinc-950"> Escuchando conexiones entrantes </span>
+                        </li>
+                    </ng-template>
+                </ul>
+            </div>
+        </section>
+
+        <ng-container *ngIf="session.connection?.isPaired">
+            <section class="mt-6 rounded-xl border-2 border-dashed p-12">
+                <h3 class="mb-6 text-xl font-medium">Firma</h3>
+                <ng-container *ngIf="session.data?.signature; else noSignature">
+                    <img
+                        [src]="session.data.signature"
+                        alt="Firma del usuario"
+                        class="object-contain"
+                    />
+                </ng-container>
+                <ng-template #noSignature>
+                    <button
+                        type="button"
+                        class="inline-flex cursor-not-allowed items-center rounded-md bg-indigo-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-indigo-400"
+                        disabled
+                    >
+                        <ng-container *ngTemplateOutlet="spinner"></ng-container>
+
+                        Procesando firma
+                    </button>
+                </ng-template>
+            </section>
+        </ng-container>
+    </ng-container>
+
+    <ng-template #noSession>
+        <div class="mt-32 grid h-full place-items-center">
+            <button
+                type="button"
+                class="inline-flex items-center rounded-md bg-indigo-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-indigo-400"
+                (click)="createSession()"
+            >
+                Crear sesión
+            </button>
+        </div>
+    </ng-template>
+</div>
+
+<ng-template #spinner>
+    <svg
+        class="-ml-1 mr-3 h-5 w-5 animate-spin text-white"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+    >
+        <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+        ></circle>
+        <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+    </svg>
+</ng-template>

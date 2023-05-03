@@ -7,8 +7,13 @@ describe('root', () => {
         expect(res.json()).toEqual({ status: true });
     });
 
-    it('serve GET /health/check', async () => {
-        const res = await app.inject('/health/check');
+    it('serve GET /health', async () => {
+        const res = await app.inject('/health');
+        expect(res.json()).toEqual({ status: true });
+    });
+
+    it('serve GET /secrets', async () => {
+        const res = await app.inject('/secrets');
         expect(res.json()).toEqual({ status: true });
     });
 });

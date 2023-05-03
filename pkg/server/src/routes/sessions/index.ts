@@ -3,8 +3,8 @@ import { getClientIp } from 'request-ip';
 import { generateKey } from '../../helpers/codegen';
 
 export enum SessionEndpoints {
-    getSessions = '/sessions',
     createSession = '/sessions',
+    retrieveSession = '/sessions/:pairingKey',
     pairSession = '/sessions/:pairingKey/connections',
     updateSession = '/sessions/:pairingKey/data',
     destroySession = '/sessions/:pairingKey',
@@ -30,10 +30,6 @@ export type SessionData = {
 const activeSessions = new Map<string, Session>();
 
 export const sessions: FastifyPluginAsync = async (fastify): Promise<void> => {
-    fastify.get(SessionEndpoints.getSessions, async (_request, reply) => {
-        return reply.send({ sessions: Array.from(activeSessions) });
-    });
-
     fastify.post(SessionEndpoints.createSession, async (request, reply) => {
         const pairingKey = generateKey(6).toString();
 
@@ -51,7 +47,23 @@ export const sessions: FastifyPluginAsync = async (fastify): Promise<void> => {
 
         activeSessions.set(pairingKey, session);
 
-        return reply.status(201).send({ created: session });
+        return reply.status(201).send(session);
+    });
+
+    fastify.get(SessionEndpoints.retrieveSession, async (request, reply) => {
+        const { pairingKey } = request.params as FastifyRequest<{
+            Params: { pairingKey: string };
+        }>['params'];
+
+        const session = activeSessions.get(pairingKey);
+
+        if (!session) {
+            return reply
+                .status(404)
+                .send({ message: `Session with the pairing key ${pairingKey} wasn't found.` });
+        }
+
+        return reply.send(session);
     });
 
     fastify.patch(SessionEndpoints.pairSession, async (request, reply) => {
@@ -78,7 +90,7 @@ export const sessions: FastifyPluginAsync = async (fastify): Promise<void> => {
 
         activeSessions.set(pairingKey, updatedSession);
 
-        return reply.send({ paired: updatedSession });
+        return reply.send(updatedSession);
     });
 
     fastify.patch(SessionEndpoints.updateSession, async (request, reply) => {
@@ -111,7 +123,7 @@ export const sessions: FastifyPluginAsync = async (fastify): Promise<void> => {
 
         activeSessions.set(pairingKey, updatedSession);
 
-        return reply.send({ updated: updatedSession });
+        return reply.send(updatedSession);
     });
 
     fastify.delete(SessionEndpoints.destroySession, async (request, reply) => {
@@ -129,6 +141,6 @@ export const sessions: FastifyPluginAsync = async (fastify): Promise<void> => {
 
         activeSessions.delete(pairingKey);
 
-        return reply.send({ deleted: sessionToDelete });
+        return reply.send(sessionToDelete);
     });
 };

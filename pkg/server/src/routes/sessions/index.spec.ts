@@ -4,7 +4,7 @@ import { SessionEndpoints } from './index';
 
 describe('sessions', () => {
     it('serve GET /', async () => {
-        const res = await app.inject(SessionEndpoints.getSessions);
+        const res = await app.inject(SessionEndpoints.retrieveSession);
         expect(true).toBe(true);
     });
 });
