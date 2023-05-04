@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 @Component({
-    selector: 'app-tabs',
+    selector: 'app-home',
     standalone: true,
     imports: [IonicModule, CommonModule, FormsModule],
-    templateUrl: 'tabs.page.html',
-    styleUrls: ['tabs.page.scss'],
+    templateUrl: 'home.page.html',
+    styleUrls: ['home.page.scss'],
 })
-export class TabsPage {}
+export class HomePage {
+    pairingCode = '';
+}

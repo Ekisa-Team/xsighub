@@ -1,12 +1,17 @@
+import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
 import SignaturePad from 'signature_pad';
 
 @Component({
-    selector: 'app-tab3',
-    templateUrl: 'tab3.page.html',
-    styleUrls: ['tab3.page.scss'],
+    selector: 'app-signature',
+    standalone: true,
+    imports: [IonicModule, CommonModule, FormsModule],
+    templateUrl: 'signature.page.html',
+    styleUrls: ['signature.page.scss'],
 })
-export class Tab3Page implements AfterViewInit {
+export class SignaturePage implements AfterViewInit {
     @ViewChild('canvas') canvasRef!: ElementRef;
 
     signaturePad!: SignaturePad;

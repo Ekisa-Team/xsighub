@@ -1,10 +1,6 @@
 import QRCode from 'qrcode';
 import { SdkArtifacts } from './sdk-artifacts';
 
-type RetrieveOptions = {
-    strategy: 'Long-Polling' | 'WebSockets' | 'Server-Sent Events';
-};
-
 export interface SdkSessions {
     create: () => Promise<Response>;
     retrieve: (pairingKey: string) => Promise<Response>;

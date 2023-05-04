@@ -65,9 +65,7 @@ export class AppComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.stopLongPolling$))
             .subscribe(async (count) => {
                 const response = await this.sdkClient.sessions.retrieve(pairingKey);
-                const session = await response.json();
-
-                this.session = session;
+                this.session = await response.json();
 
                 count === 0 && (await this.generateQR(pairingKey));
             });
