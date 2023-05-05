@@ -109,7 +109,6 @@ export class AppComponent implements OnInit, OnDestroy {
                     return JSON.stringify(prevSession) === JSON.stringify(currSession);
                 }),
                 tap(async (session: Session) => {
-                    console.log(session);
                     this.session = session;
 
                     if (!this.qrContainer?.nativeElement.hasChildNodes()) {
@@ -117,7 +116,7 @@ export class AppComponent implements OnInit, OnDestroy {
                     }
 
                     if (this.session?.data.signature) {
-                        // Lógica para almacenar firma en la base de datos
+                        // Lógica para almacenar firma
                     }
                 }),
             )
