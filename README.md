@@ -7,7 +7,7 @@
 - Node.js (versión 18 o superior): <https://nodejs.org/en/>
 - PNPM: <https://pnpm.io/es/>
 
-## Iniciar proyectos Server y Mobile
+## Iniciar proyectos Server y SDK
 
 1. Instalar `node_modules`.
 
@@ -23,10 +23,10 @@
   pnpm server:dev
   ```
 
-- Mobile (Svelte native): [http://localhost:3001](http://localhost:3001)
+- SDK (TS)
 
   ```sh
-  pnpm mobile:dev
+  pnpm sdk:dev
   ```
 
 ## Ejecutar ejemplos

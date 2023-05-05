@@ -23,7 +23,7 @@ module.exports = {
         ],
         'scope-empty': [1, 'never'],
         'scope-case': [2, 'always', 'kebab-case'],
-        'scope-enum': [2, 'always', ['server', 'sdk', 'mobile']],
+        'scope-enum': [2, 'always', ['server', 'sdk', 'docs']],
         'subject-empty': [2, 'never'],
         'header-max-length': [2, 'always', 130],
         'footer-leading-blank': [2, 'always'],
