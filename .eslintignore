@@ -14,10 +14,3 @@ yarn.lock
 
 # Ignore test coverage
 **/coverage
-
-# Ignore mobile resources
-/pkg/mobile/platforms
-/pkg/mobile/App_Resources
-/pkg/mobile/hooks
-/pkg/mobile/types
-/pkg/mobile/www

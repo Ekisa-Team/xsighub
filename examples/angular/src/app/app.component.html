@@ -39,13 +39,13 @@
                     <li class="rounded-xl border-l-8 border-zinc-200 bg-zinc-100 p-3">
                         <span class="text-zinc-500"> IP (Cliente) </span>
                         <span class="block text-zinc-950">
-                            {{ session.connection?.clientIp }}
+                            {{ session.connection.clientIp }}
                         </span>
                     </li>
                     <li class="rounded-xl border-l-8 border-zinc-200 bg-zinc-100 p-3">
                         <span class="text-zinc-500"> User-Agent </span>
                         <span class="block text-zinc-950">
-                            {{ session.connection?.userAgent }}
+                            {{ session.connection.userAgent }}
                         </span>
                     </li>
                     <ng-container *ngIf="session.connection?.isPaired; else notPaired">
@@ -53,10 +53,10 @@
                             *ngIf="session.connection?.isPaired"
                             class="rounded-xl border-l-8 border-zinc-200 bg-zinc-100 p-3"
                         >
-                            Fecha de vinculación
+                            <span class="text-zinc-500"> Fecha de vinculación </span>
 
                             <span class="block text-zinc-950">
-                                {{ session.connection?.pairedAt | date : 'long' }}
+                                {{ session.connection.pairedAt | date : 'full' }}
                             </span>
                         </li>
                     </ng-container>
@@ -78,12 +78,15 @@
 
         <ng-container *ngIf="session.connection?.isPaired">
             <section class="mt-6 rounded-xl border-2 border-dashed p-12">
-                <h3 class="mb-6 text-xl font-medium">Firma</h3>
+                <h3 class="mb-6 text-xl font-medium">
+                    Firma {{ selectedUser && 'de ' + selectedUser }}
+                </h3>
+
                 <ng-container *ngIf="session.data?.signature; else noSignature">
                     <img
                         [src]="session.data.signature"
                         alt="Firma del usuario"
-                        class="object-contain"
+                        class="h-[300px] w-full border-4 border-double bg-black object-scale-down"
                     />
                 </ng-container>
                 <ng-template #noSignature>
@@ -102,15 +105,43 @@
     </ng-container>
 
     <ng-template #noSession>
-        <div class="mt-32 grid h-full place-items-center">
-            <button
-                type="button"
-                class="inline-flex items-center rounded-md bg-indigo-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-indigo-400"
-                (click)="createSession()"
-            >
-                Crear sesión
-            </button>
-        </div>
+        <section class="mt-6 rounded-xl border-2 border-dashed p-12">
+            <h3 class="mb-6 text-xl font-medium">Usuarios (Crear sesión)</h3>
+
+            <div class="flex flex-col gap-4">
+                <button
+                    type="button"
+                    class="inline-flex items-center rounded-md bg-rose-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-rose-400"
+                    (click)="handleUserSelection('Pedro')"
+                >
+                    Pedro
+                </button>
+
+                <button
+                    type="button"
+                    class="inline-flex items-center rounded-md bg-rose-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-rose-400"
+                    (click)="handleUserSelection('María')"
+                >
+                    María
+                </button>
+
+                <button
+                    type="button"
+                    class="inline-flex items-center rounded-md bg-rose-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-rose-400"
+                    (click)="handleUserSelection('Lucas')"
+                >
+                    Lucas
+                </button>
+
+                <button
+                    type="button"
+                    class="inline-flex items-center rounded-md bg-rose-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-rose-400"
+                    (click)="handleUserSelection('Sofía')"
+                >
+                    Sofía
+                </button>
+            </div>
+        </section>
     </ng-template>
 </div>
 

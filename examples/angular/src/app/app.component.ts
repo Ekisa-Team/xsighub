@@ -8,15 +8,33 @@ import {
     ViewChild,
     inject,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { client, environmentPlugin, type SdkClient } from '@ekisa-xsighub/sdk';
-import { Subject, takeUntil, timer } from 'rxjs';
+import { Subject, distinctUntilChanged, switchMap, takeUntil, tap, timer } from 'rxjs';
+
+export type Session = {
+    pairingKey: string;
+    connection: SessionConnection;
+    data: SessionData;
+};
+
+export type SessionConnection = {
+    clientIp: string;
+    userAgent: string;
+    isPaired: boolean;
+    pairedAt?: Date;
+};
+
+export type SessionData = {
+    signature: string;
+};
 
 export const LONG_POLLING_INTERVAL = 3000;
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, FormsModule],
     templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
@@ -28,7 +46,25 @@ export class AppComponent implements OnInit, OnDestroy {
 
     sdkClient!: SdkClient;
 
-    session: any;
+    selectedUser = '';
+
+    get session(): Session | null {
+        try {
+            const storedSession = localStorage.getItem('xsighub:session');
+            return storedSession ? JSON.parse(storedSession) : null;
+        } catch (error) {
+            console.error(`Error parsing session from localStorage: ${error}`);
+            return null;
+        }
+    }
+
+    set session(value: Session | null) {
+        if (value) {
+            localStorage.setItem('xsighub:session', JSON.stringify(value));
+        } else {
+            localStorage.removeItem('xsighub:session');
+        }
+    }
 
     async ngOnInit(): Promise<void> {
         this.sdkClient = await client.init('my-secret', {
@@ -44,7 +80,7 @@ export class AppComponent implements OnInit, OnDestroy {
             ],
         });
 
-        this.createSession();
+        this.session && this.retrieveSession();
     }
 
     ngOnDestroy(): void {
@@ -53,26 +89,45 @@ export class AppComponent implements OnInit, OnDestroy {
 
     async createSession(): Promise<void> {
         const response = await this.sdkClient.sessions.create();
-        const session = await response.json();
 
-        await this.retrieveSession(session.pairingKey);
+        this.session = await response.json();
+
+        await this.retrieveSession();
     }
 
-    async retrieveSession(pairingKey: string): Promise<void> {
+    async retrieveSession(): Promise<void> {
+        if (!this.session) return;
+
         this.stopLongPolling$ = new Subject<void>();
 
         timer(0, LONG_POLLING_INTERVAL)
-            .pipe(takeUntil(this.stopLongPolling$))
-            .subscribe(async (count) => {
-                const response = await this.sdkClient.sessions.retrieve(pairingKey);
-                this.session = await response.json();
+            .pipe(
+                takeUntil(this.stopLongPolling$),
+                switchMap(() => this.sdkClient.sessions.retrieve(this.session?.pairingKey ?? '')),
+                switchMap((response) => response.json()),
+                distinctUntilChanged((prevSession: Session, currSession: Session) => {
+                    return JSON.stringify(prevSession) === JSON.stringify(currSession);
+                }),
+                tap(async (session: Session) => {
+                    console.log(session);
+                    this.session = session;
 
-                count === 0 && (await this.generateQR(pairingKey));
-            });
+                    if (!this.qrContainer?.nativeElement.hasChildNodes()) {
+                        await this.generateQR();
+                    }
+
+                    if (this.session?.data.signature) {
+                        // Lógica para almacenar firma en la base de datos
+                    }
+                }),
+            )
+            .subscribe();
     }
 
-    async generateQR(pairingKey: string): Promise<void> {
-        const qrCode = await this.sdkClient.sessions.generateQR(pairingKey);
+    async generateQR(): Promise<void> {
+        if (!this.session) return;
+
+        const qrCode = await this.sdkClient.sessions.generateQR(this.session.pairingKey);
 
         this.renderer.appendChild(
             this.qrContainer?.nativeElement,
@@ -81,13 +136,19 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     async destroySession(): Promise<void> {
-        const response = await this.sdkClient.sessions.destroy(this.session?.pairingKey);
-        const session = await response.json();
+        if (!this.session) return;
 
-        if (session) {
-            this.session = null;
-            this._stopLongPolling();
-        }
+        await this.sdkClient.sessions.destroy(this.session.pairingKey);
+
+        this.session = null;
+
+        this._stopLongPolling();
+    }
+
+    async handleUserSelection(name: string): Promise<void> {
+        this.selectedUser = name;
+
+        this.createSession();
     }
 
     private _stopLongPolling(): void {
