@@ -5,7 +5,7 @@
  */
 export const generateKey = (length: number): number => {
     const keyString = new Array(length)
-        .fill(6)
+        .fill(null)
         .map(() => Math.floor(Math.random() * 10))
         .join('');
 
