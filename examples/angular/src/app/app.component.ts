@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { client, environmentPlugin, type SdkClient } from '@ekisa-xsighub/sdk';
-import { Subject, distinctUntilChanged, switchMap, takeUntil, tap, timer } from 'rxjs';
+import { Subject, distinctUntilChanged, filter, switchMap, takeUntil, tap, timer } from 'rxjs';
 
 export type Session = {
     pairingKey: string;
@@ -40,9 +40,9 @@ export const LONG_POLLING_INTERVAL = 3000;
 export class AppComponent implements OnInit, OnDestroy {
     @ViewChild('qrContainer') qrContainer!: ElementRef<HTMLDivElement>;
 
-    renderer = inject(Renderer2);
-
     stopLongPolling$!: Subject<void>;
+
+    renderer = inject(Renderer2);
 
     sdkClient!: SdkClient;
 
@@ -80,7 +80,7 @@ export class AppComponent implements OnInit, OnDestroy {
             ],
         });
 
-        this.session && this.retrieveSession();
+        this.session && this.startSessionRetrieval();
     }
 
     ngOnDestroy(): void {
@@ -92,46 +92,37 @@ export class AppComponent implements OnInit, OnDestroy {
 
         this.session = await response.json();
 
-        await this.retrieveSession();
+        await this.startSessionRetrieval();
     }
 
-    async retrieveSession(): Promise<void> {
+    async startSessionRetrieval(): Promise<void> {
         if (!this.session) return;
 
         this.stopLongPolling$ = new Subject<void>();
 
         timer(0, LONG_POLLING_INTERVAL)
             .pipe(
-                takeUntil(this.stopLongPolling$),
                 switchMap(() => this.sdkClient.sessions.retrieve(this.session?.pairingKey ?? '')),
-                switchMap((response) => response.json()),
-                distinctUntilChanged((prevSession: Session, currSession: Session) => {
-                    return JSON.stringify(prevSession) === JSON.stringify(currSession);
+                tap((response) => {
+                    if (response.status !== 200) {
+                        this.session = null;
+                        this._stopLongPolling();
+                    }
                 }),
-                tap(async (session: Session) => {
+                filter((response) => response.status === 200),
+                switchMap((response) => response.json()),
+                distinctUntilChanged<Session>(
+                    (previous, current) => JSON.stringify(previous) === JSON.stringify(current),
+                ),
+                tap(async (session) => {
                     this.session = session;
 
-                    if (!this.qrContainer?.nativeElement.hasChildNodes()) {
-                        await this.generateQR();
-                    }
-
-                    if (this.session?.data.signature) {
-                        // Lógica para almacenar firma
-                    }
+                    this._handleQrGeneration();
+                    this._handleSignatureIngest();
                 }),
+                takeUntil(this.stopLongPolling$),
             )
             .subscribe();
-    }
-
-    async generateQR(): Promise<void> {
-        if (!this.session) return;
-
-        const qrCode = await this.sdkClient.sessions.generateQR(this.session.pairingKey);
-
-        this.renderer.appendChild(
-            this.qrContainer?.nativeElement,
-            new DOMParser().parseFromString(qrCode, 'text/html').body.firstElementChild,
-        );
     }
 
     async destroySession(): Promise<void> {
@@ -150,8 +141,25 @@ export class AppComponent implements OnInit, OnDestroy {
         this.createSession();
     }
 
+    private async _handleQrGeneration(): Promise<void> {
+        if (!this.session || this.qrContainer?.nativeElement.hasChildNodes()) return;
+
+        const qrCode = await this.sdkClient.sessions.generateQR(this.session.pairingKey);
+
+        this.renderer.appendChild(
+            this.qrContainer?.nativeElement,
+            new DOMParser().parseFromString(qrCode, 'text/html').body.firstElementChild,
+        );
+    }
+
+    private async _handleSignatureIngest(): Promise<void> {
+        if (this.session?.data.signature) {
+            alert('Lógica para almacenar firma u otra información relacionada a la sesión.');
+        }
+    }
+
     private _stopLongPolling(): void {
         this.stopLongPolling$.next();
-        this.stopLongPolling$.unsubscribe();
+        this.stopLongPolling$.complete();
     }
 }
