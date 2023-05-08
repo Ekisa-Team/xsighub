@@ -15,7 +15,7 @@ if (import.meta.env.PROD) {
         });
 
         app.listen({
-            port: PORT,
+            port: Number(process.env.PORT) || PORT,
             host: '0.0.0.0',
         });
     } catch (error) {
