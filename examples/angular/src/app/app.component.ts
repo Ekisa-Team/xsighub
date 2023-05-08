@@ -154,7 +154,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     private async _handleSignatureIngest(): Promise<void> {
         if (this.session?.data.signature) {
-            alert('Lógica para almacenar firma u otra información relacionada a la sesión.');
+            console.log('Lógica para almacenar firma u otra información relacionada a la sesión.');
         }
     }
 
