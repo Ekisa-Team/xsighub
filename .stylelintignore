@@ -1,4 +1,11 @@
-/build
+# Ignore everything that starts with a dot
+.*
 
-# Ignore test coverage
-**/coverage
+node_modules
+**/build
+**/dist
+
+# Ignore files for PNPM, NPM and YARN
+pnpm-lock.yaml
+package-lock.json
+yarn.lock

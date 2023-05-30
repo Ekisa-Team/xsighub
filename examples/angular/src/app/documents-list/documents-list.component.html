@@ -1,0 +1,23 @@
+<section class="grid grid-cols-1 rounded-xl border-2 border-dashed p-6 lg:col-span-2">
+    <h3 class="mb-6 text-xl font-medium">Incluir documentos</h3>
+
+    <select
+        class="h-24"
+        multiple
+        [ngModel]="[]"
+        (ngModelChange)="handleModelChange($event)"
+    >
+        <option
+            *ngFor="let document of documents"
+            [value]="document.id"
+        >
+            {{ document.title }}
+        </option>
+    </select>
+
+    <div
+        class="mt-6 h-96 overflow-x-auto rounded-xl bg-gradient-to-br from-black via-blue-900 to-rose-900 p-12 font-semibold text-white"
+    >
+        <pre><code>{{ selectedDocuments | json }}</code></pre>
+    </div>
+</section>

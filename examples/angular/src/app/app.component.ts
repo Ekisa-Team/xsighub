@@ -9,38 +9,29 @@ import {
     inject,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Session, SessionDocument } from '@ekisa-xsighub/core';
 import { client, environmentPlugin, type SdkClient } from '@ekisa-xsighub/sdk';
+import { Socket } from 'ngx-socket-io';
 import { Subject, distinctUntilChanged, filter, switchMap, takeUntil, tap, timer } from 'rxjs';
+import { DocumentsComponent } from './documents-list/documents-list.component';
+import { ToolbarComponent } from './toolbar/toolbar.component';
 
-export type Session = {
-    pairingKey: string;
-    connection: SessionConnection;
-    data: SessionData;
-};
+export const LONG_POLLING_INTERVAL = 1000;
 
-export type SessionConnection = {
-    clientIp: string;
-    userAgent: string;
-    isPaired: boolean;
-    pairedAt?: Date;
-};
-
-export type SessionData = {
-    signature: string;
-};
-
-export const LONG_POLLING_INTERVAL = 3000;
+const COMPONENTS = [ToolbarComponent, DocumentsComponent] as const;
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, ...COMPONENTS],
     templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
     @ViewChild('qrContainer') qrContainer!: ElementRef<HTMLDivElement>;
 
     stopLongPolling$!: Subject<void>;
+
+    private readonly _socket = inject(Socket);
 
     renderer = inject(Renderer2);
 
@@ -79,8 +70,6 @@ export class AppComponent implements OnInit, OnDestroy {
                 }),
             ],
         });
-
-        this.session && this.startSessionRetrieval();
     }
 
     ngOnDestroy(): void {
@@ -88,11 +77,13 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     async createSession(): Promise<void> {
-        const response = await this.sdkClient.sessions.create();
+        // const response = await this.sdkClient.sessions.create();
 
-        this.session = await response.json();
+        // this.session = await response.json();
 
-        await this.startSessionRetrieval();
+        // await this.startSessionRetrieval();
+
+        this._socket.emit('message', 'mundo');
     }
 
     async startSessionRetrieval(): Promise<void> {
@@ -135,6 +126,13 @@ export class AppComponent implements OnInit, OnDestroy {
         this._stopLongPolling();
     }
 
+    async handleDocumentsChanged(documents: SessionDocument[]): Promise<void> {
+        console.log(documents);
+        if (!this.session) return;
+
+        // await this.sdkClient.sessions.update(this.session.pairingKey, { sdf: '' });
+    }
+
     async handleUserSelection(name: string): Promise<void> {
         this.selectedUser = name;
 
@@ -153,7 +151,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     private async _handleSignatureIngest(): Promise<void> {
-        if (this.session?.data.signature) {
+        if (this.session?.data?.payload) {
             console.log('Lógica para almacenar firma u otra información relacionada a la sesión.');
         }
     }

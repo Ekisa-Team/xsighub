@@ -1,0 +1,43 @@
+{
+  "name": "@ekisa-xsighub/core",
+  "version": "0.0.0",
+  "description": "El motor central de Xsighub sin ajustes preestablecidos.",
+  "author": "Ekisa-Team",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.mjs",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ekisa-Team/xsighub/tree/main/pkg/core"
+  },
+  "bugs": {
+    "url": "https://github.com/Ekisa-Team/xsighub/issues"
+  },
+  "homepage": "https://github.com/Ekisa-Team/xsighub/tree/main/pkg/core",
+  "keywords": [
+    "Ekisa",
+    "Ekisa core",
+    "Ekisa signature"
+  ],
+  "scripts": {
+    "dev": "unbuild --stub",
+    "build": "rimraf dist && unbuild",
+    "release": "pnpm publish --access public"
+  },
+  "devDependencies": {
+    "@types/qrcode": "^1.5.0",
+    "rimraf": "^5.0.0",
+    "unbuild": "^1.2.1"
+  }
+}

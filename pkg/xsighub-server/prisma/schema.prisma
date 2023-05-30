@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id         Int                @id @default(autoincrement())
+  pairingKey String             @unique
+  connection SessionConnection?
+  references SessionReference[]
+
+  @@map(name: "session")
+}
+
+model SessionConnection {
+  id        Int       @id @default(autoincrement())
+  clientIp  String
+  userAgent String
+  isPaired  Boolean   @default(false)
+  pairedAt  DateTime?
+
+  sessionId Int     @unique
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map(name: "sessionConnection")
+}
+
+model SessionReference {
+  id                  Int                @id @default(autoincrement())
+  type                String             @default("standalone")
+  name                String
+  documentPlaceholder String?
+  signatures          SessionSignature[]
+
+  sessionId Int
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map(name: "sessionReference")
+}
+
+model SessionSignature {
+  id       Int     @id @default(autoincrement())
+  ingest   String
+  metadata String?
+
+  referenceId Int
+  reference   SessionReference @relation(fields: [referenceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map(name: "sessionSignature")
+}

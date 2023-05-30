@@ -1,0 +1,24 @@
+# Base image
+FROM node:18-alpine 
+
+# Set the working directory
+WORKDIR /usr/apps/server
+
+# Install pnpm package manager
+RUN npm i -g pnpm
+
+# Copy package.json and pnpm-lock.yaml
+COPY --chown=node:node pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY . .
+
+# Install dependencies, build the app, and remove dev dependencies
+RUN pnpm install --frozen-lockfile && \
+    pnpm run server:build && \
+    pnpm prune --prod && \
+    rm -rf /root/.pnpm-store
+
+# Expose port 3000
+EXPOSE 3000
+
+# Start the node server
+CMD ["node", "pkg/server/dist/server.mjs"]

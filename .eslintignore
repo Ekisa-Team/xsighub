@@ -1,16 +1,11 @@
-.DS_Store
+# Ignore everything that starts with a dot
+.*
+
 node_modules
-/build
-.svelte-kit
-.env
-.env.*
-!.env.example
-__generated__
+**/build
+**/dist
 
 # Ignore files for PNPM, NPM and YARN
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
-
-# Ignore test coverage
-**/coverage

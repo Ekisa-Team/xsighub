@@ -2,23 +2,33 @@
     <div class="mx-auto flex h-full max-w-screen-lg items-center justify-between px-6">
         <h1 class="text-3xl font-semibold">Xsighub</h1>
 
-        <ng-container *ngIf="session">
-            <div class="flex items-center gap-6">
-                <button
-                    type="button"
-                    class="inline-flex items-center rounded-md bg-red-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-red-400"
-                    (click)="destroySession()"
-                >
-                    Destruir sesión
-                </button>
-            </div>
-        </ng-container>
+        <div class="flex items-center gap-6">
+            <button
+                *ngIf="!session"
+                type="button"
+                class="inline-flex items-center rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-blue-400"
+                (click)="createSession()"
+            >
+                Crear sesión
+            </button>
+
+            <button
+                *ngIf="session"
+                type="button"
+                class="inline-flex items-center rounded-md bg-red-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-red-400"
+                (click)="destroySession()"
+            >
+                Destruir sesión
+            </button>
+        </div>
     </div>
 </header>
 
 <div class="mx-auto my-12 max-w-screen-lg px-6">
     <ng-container *ngIf="session; else noSession">
-        <section class="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
+        <app-documents-list (changed)="handleDocumentsChanged($event)" />
+
+        <section class="mt-6 grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
             <div class="rounded-xl border-2 border-dashed">
                 <div
                     #qrContainer
@@ -26,7 +36,7 @@
                 ></div>
             </div>
 
-            <div class="connection rounded-xl border-2 border-dashed p-12 lg:col-span-2">
+            <div class="connection rounded-xl border-2 border-dashed p-6 lg:col-span-2">
                 <h3 class="mb-6 text-xl font-medium">Conexión</h3>
 
                 <ul class="flex flex-col gap-y-3">
@@ -87,9 +97,9 @@
                     Firma {{ selectedUser && 'de ' + selectedUser }}
                 </h3>
 
-                <ng-container *ngIf="session.data?.signature; else noSignature">
+                <ng-container *ngIf="session.data?.payload; else noSignature">
                     <img
-                        [src]="session.data.signature"
+                        [src]="session.data?.payload?.toString()"
                         alt="Firma del usuario"
                         class="h-[300px] w-full border-4 border-double bg-black object-scale-down"
                     />

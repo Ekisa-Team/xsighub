@@ -1,3 +1,9 @@
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
 # Logs
 logs
 *.log
@@ -13,6 +19,15 @@ dist-ssr
 *.local
 coverage
 
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -20,9 +35,17 @@ coverage
 !.vscode/settings.json
 !.vscode/tasks.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+.project
+.classpath
+.c9/
+*.launch
+*.sublime-workspace
+
+# System files
+.DS_Store
+Thumbs.db
