@@ -1,4 +1,49 @@
-<header class="h-[70px] bg-zinc-950 text-zinc-200 shadow-xl">
+<app-toolbar>
+    <button
+        *ngIf="session()"
+        type="button"
+        class="inline-flex items-center rounded-md bg-red-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-red-400"
+        (click)="destroySession()"
+    >
+        Destruir sesión
+    </button>
+</app-toolbar>
+
+<main class="mx-auto mt-12 max-w-screen-lg">
+    <ng-container *ngIf="session() as currentSession; else noSession">
+        <section class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <app-qr-view [code]="currentSession.pairingKey" />
+
+            <div class="col-span-2">
+                <app-connection-info [session]="currentSession" />
+            </div>
+        </section>
+
+        <section class="mt-6 grid grid-cols-1 gap-6">
+            <app-references
+                [session]="currentSession"
+                (createReference)="handleCreateStandalone($event)"
+                (deleteReference)="handleDeleteStandalone($event)"
+            />
+        </section>
+    </ng-container>
+
+    <ng-template #noSession>
+        <div class="mt-36 grid place-items-center">
+            <button
+                type="button"
+                class="inline-flex items-center rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-blue-400"
+                (click)="createSession()"
+            >
+                Crear sesión
+            </button>
+        </div>
+    </ng-template>
+</main>
+
+<!-- {{ session() | json }} -->
+
+<!-- <header class="h-[70px] bg-zinc-950 text-zinc-200 shadow-xl">
     <div class="mx-auto flex h-full max-w-screen-lg items-center justify-between px-6">
         <h1 class="text-3xl font-semibold">Xsighub</h1>
 
@@ -26,7 +71,7 @@
 
 <div class="mx-auto my-12 max-w-screen-lg px-6">
     <ng-container *ngIf="session; else noSession">
-        <app-documents-list (changed)="handleDocumentsChanged($event)" />
+        <app-references (changed)="handleReferenceChanges($event)" />
 
         <section class="mt-6 grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
             <div class="rounded-xl border-2 border-dashed">
@@ -49,13 +94,13 @@
                     <li class="rounded-xl border-l-8 border-zinc-200 bg-zinc-100 p-3">
                         <span class="text-zinc-500"> IP (Cliente) </span>
                         <span class="block text-zinc-950">
-                            {{ session.connection.clientIp }}
+                            {{ session.connection?.clientIp }}
                         </span>
                     </li>
                     <li class="rounded-xl border-l-8 border-zinc-200 bg-zinc-100 p-3">
                         <span class="text-zinc-500"> User-Agent </span>
                         <span class="block text-zinc-950">
-                            {{ session.connection.userAgent }}
+                            {{ session.connection?.userAgent }}
                         </span>
                     </li>
                     <ng-container *ngIf="session.connection?.isPaired; else notPaired">
@@ -66,12 +111,11 @@
                             <span class="text-zinc-500"> Fecha de vinculación </span>
 
                             <span class="flex items-center gap-2 text-zinc-950">
-                                <!-- prettier-ignore -->
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
                                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
 
-                                {{ session.connection.pairedAt | date : 'full' }}
+                                {{ session.connection?.pairedAt | date : 'full' }}
                             </span>
                         </li>
                     </ng-container>
@@ -181,4 +225,4 @@
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
         ></path>
     </svg>
-</ng-template>
+</ng-template> -->

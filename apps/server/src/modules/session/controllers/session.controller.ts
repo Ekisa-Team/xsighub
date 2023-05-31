@@ -1,7 +1,7 @@
 import { ClientIp, CorrelationId, UserAgent } from '@lib/decorators';
 import { XsighubLoggerService } from '@lib/logger';
 import { ApiVersion } from '@lib/types';
-import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SessionDto } from '../dtos/session.dto';
 import { SessionService } from '../services/session.service';
@@ -49,6 +49,16 @@ export class SessionController {
         this._logger.info(`[${this.findByPairingKey.name}]`, { correlationId });
 
         return this._sessionsService.findByPairingKey(pairingKey, { correlationId });
+    }
+
+    @Patch(':pairingKey')
+    pair(
+        @CorrelationId() correlationId: string,
+        @Param('pairingKey') pairingKey: string,
+    ): Promise<SessionDto> {
+        this._logger.info(`[${this.pair.name}]`, { correlationId });
+
+        return this._sessionsService.pair(pairingKey, { correlationId });
     }
 
     @Delete()

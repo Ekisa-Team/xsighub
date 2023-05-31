@@ -7,12 +7,17 @@ import {
     SessionReferenceDto,
     SessionReferenceUpdateDto,
 } from '../dtos/session-reference.dto';
+import { SessionReferenceType } from '../enums/session-reference.enum';
+import { SessionGateway } from '../gateways/session.gateway';
+import { SessionService } from './session.service';
 
 @Injectable()
 export class SessionReferenceService {
     constructor(
         private readonly _logger: XsighubLoggerService,
         private readonly _prisma: PrismaService,
+        private readonly _sessionService: SessionService,
+        private readonly _sessionGateway: SessionGateway,
     ) {
         this._logger.setContext(this.constructor.name);
     }
@@ -24,6 +29,9 @@ export class SessionReferenceService {
         this._logger.info(`[${this.create.name}]`, { correlationId });
 
         const session = await this._prisma.session.findUnique({
+            include: {
+                references: true,
+            },
             where: {
                 id: data.sessionId,
             },
@@ -35,7 +43,25 @@ export class SessionReferenceService {
             );
         }
 
-        return this._prisma.sessionReference.create({ data });
+        if (
+            data.type === SessionReferenceType.Standalone &&
+            session.references.some((ref) => ref.type === SessionReferenceType.Standalone)
+        ) {
+            throw new NotFoundException(
+                `There can only be a single standalone reference per session.`,
+            );
+        }
+
+        const created = await this._prisma.sessionReference.create({ data });
+
+        this._sessionGateway.handleSessionUpdated(
+            await this._sessionService.findById(created.sessionId, { correlationId }),
+            {
+                correlationId,
+            },
+        );
+
+        return created;
     }
 
     async update(
@@ -57,10 +83,19 @@ export class SessionReferenceService {
             );
         }
 
-        return this._prisma.sessionReference.update({
+        const updated = await this._prisma.sessionReference.update({
             data,
             where: { id: referenceId },
         });
+
+        this._sessionGateway.handleSessionUpdated(
+            await this._sessionService.findById(updated.sessionId, { correlationId }),
+            {
+                correlationId,
+            },
+        );
+
+        return updated;
     }
 
     async delete(referenceId: number, { correlationId }: ApiExtras): Promise<SessionReferenceDto> {
@@ -78,10 +113,19 @@ export class SessionReferenceService {
             );
         }
 
-        return this._prisma.sessionReference.delete({
+        const deleted = await this._prisma.sessionReference.delete({
             where: {
                 id: referenceId,
             },
         });
+
+        this._sessionGateway.handleSessionUpdated(
+            await this._sessionService.findById(deleted.sessionId, { correlationId }),
+            {
+                correlationId,
+            },
+        );
+
+        return deleted;
     }
 }

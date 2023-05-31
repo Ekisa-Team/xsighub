@@ -1,13 +1,14 @@
 import { XsighubLoggerService } from '@lib/logger';
+import { ApiExtras } from '@lib/types/api-extras';
 import {
     OnGatewayConnection,
     OnGatewayDisconnect,
     OnGatewayInit,
-    SubscribeMessage,
     WebSocketGateway,
     WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { SessionDto } from '../dtos/session.dto';
 
 @WebSocketGateway({
     namespace: 'sessions',
@@ -31,9 +32,39 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this._logger.info(`[Session] Client disconnected ${client.id}`);
     }
 
-    @SubscribeMessage('message')
-    handleMessage(client: Socket, payload: any) {
-        console.log(`Received message from ${client.id}: ${payload}`);
-        this._server.emit('message', `Echo: ${payload}`);
+    async handleSessionCreated(session: SessionDto, { correlationId }: ApiExtras) {
+        this._logger.info(`[${this.handleSessionCreated.name}]`, { correlationId });
+
+        this._server.emit('sessionCreated', {
+            message: `Session created: ${session.id}`,
+            session,
+        });
+    }
+
+    async handleSessionUpdated(session: SessionDto, { correlationId }: ApiExtras) {
+        this._logger.info(`[${this.handleSessionUpdated.name}]`, { correlationId });
+
+        this._server.emit('sessionUpdated', {
+            message: `Session updated: ${session.id}`,
+            session,
+        });
+    }
+
+    async handleSessionPaired(session: SessionDto, { correlationId }: ApiExtras) {
+        this._logger.info(`[${this.handleSessionPaired.name}]`, { correlationId });
+
+        this._server.emit('sessionPaired', {
+            message: `Session paired: ${session.id}`,
+            session,
+        });
+    }
+
+    async handleSessionDestroyed(session: SessionDto, { correlationId }: ApiExtras) {
+        this._logger.info(`[${this.handleSessionDestroyed.name}]`, { correlationId });
+
+        this._server.emit('sessionDestroyed', {
+            message: `Session destroyed: ${session.id}`,
+            session,
+        });
     }
 }

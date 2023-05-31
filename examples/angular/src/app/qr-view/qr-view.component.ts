@@ -3,12 +3,13 @@ import {
     Component,
     ElementRef,
     Input,
+    OnChanges,
     Renderer2,
     ViewChild,
-    WritableSignal,
-    effect,
     inject,
 } from '@angular/core';
+import { client } from '@ekisa-xsighub/sdk';
+import { environment } from 'src/environments/environment.development';
 
 @Component({
     selector: 'app-qr-view',
@@ -16,21 +17,28 @@ import {
     imports: [CommonModule],
     templateUrl: './qr-view.component.html',
 })
-export class QrViewComponent {
-    @Input({ required: true }) code!: WritableSignal<string>;
+export class QrViewComponent implements OnChanges {
+    @Input({ required: true }) code!: string;
 
     @ViewChild('qrWrapper') qrWrapper!: ElementRef<HTMLDivElement>;
 
-    renderer = inject(Renderer2);
+    private readonly _renderer = inject(Renderer2);
 
-    constructor() {
-        effect(async () => {
-            if (this.code() && !this.qrWrapper?.nativeElement.hasChildNodes()) {
-                const qrElement = new DOMParser().parseFromString(this.code(), 'text/html').body
-                    .firstElementChild;
+    private readonly _sdk = client.init({
+        host: environment.xsighub.host,
+        version: 'v=1.0',
+    });
 
-                this.renderer.appendChild(this.qrWrapper?.nativeElement, qrElement);
-            }
-        });
+    async ngOnChanges(): Promise<void> {
+        if (this.code) {
+            if (this.qrWrapper?.nativeElement.hasChildNodes()) return;
+
+            const qrCode = await this._sdk.qr.generate(this.code);
+
+            this._renderer.appendChild(
+                this.qrWrapper?.nativeElement,
+                new DOMParser().parseFromString(qrCode, 'text/html').body.firstElementChild,
+            );
+        }
     }
 }
