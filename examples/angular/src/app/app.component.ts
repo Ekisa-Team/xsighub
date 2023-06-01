@@ -96,10 +96,7 @@ export class AppComponent implements OnInit {
         this._socket
             .fromEvent<SocketEvent>(__sessionSocketEvents__.updated)
             .pipe(map((event) => event.session))
-            .subscribe((session) => {
-                console.log(session);
-                this.session.set(session);
-            });
+            .subscribe(this.session.set);
 
         this._socket
             .fromEvent<SocketEvent>(__sessionSocketEvents__.paired)
