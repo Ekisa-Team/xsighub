@@ -5,7 +5,13 @@
 export const environment = {
     production: false,
     xsighub: {
-        host: 'http://localhost:3000',
+        api: 'http://localhost:3000/api',
+        version: 'v=1.0',
+        socketIO: {
+            namespaces: {
+                sessions: 'ws://localhost:3000/sessions',
+            },
+        },
     },
 };
 

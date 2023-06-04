@@ -22,20 +22,43 @@ export type SessionReference = {
     name: string;
     documentPlaceholder?: string | null;
     signatures?: SessionSignature[];
+    documents?: SessionDocument[];
     sessionId: Session['id'];
 };
 
 export type SessionSignature = {
     id: number;
-    ingest: string;
-    metadata?: string | null;
+    signatureData: string;
+    metadata?: string;
     referenceId: SessionReference['id'];
 };
 
-export const __sessionSocketEvents__: SocketEvent<'created' | 'updated' | 'paired' | 'destroyed'> =
-    {
-        created: 'sessionCreated',
-        updated: 'sessionUpdated',
-        paired: 'sessionPaired',
-        destroyed: 'sessionDestroyed',
-    };
+export type SessionSignatureMetadata = {
+    ingest: Record<string, string>;
+};
+
+export type SessionDocument = {
+    id: number;
+    rawContent: string;
+    metadata?: string;
+    referenceId: SessionReference['id'];
+};
+
+export type SessionDocumentMetadata = {
+    ingest: Record<string, string>;
+};
+
+export type SessionDocumentSignature = {
+    signatureName: string;
+    signatureData: string;
+};
+
+export const __sessionSocketEvents__: SocketEvent<
+    'created' | 'updated' | 'paired' | 'unpaired' | 'destroyed'
+> = {
+    created: 'sessionCreated',
+    updated: 'sessionUpdated',
+    paired: 'sessionPaired',
+    unpaired: 'sessionUnpaired',
+    destroyed: 'sessionDestroyed',
+};

@@ -16,7 +16,7 @@ export class References implements SdkReferences {
     api: string;
 
     constructor(private readonly config: SdkClientConfig) {
-        this.api = `${this.config.host}/api/${this.config.version}/session-references`;
+        this.api = `${this.config.api}/${this.config.version}/session-references`;
     }
 
     async create(data: ReferenceCreate): Promise<SessionReference> {

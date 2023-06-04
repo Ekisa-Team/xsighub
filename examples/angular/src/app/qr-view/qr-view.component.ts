@@ -25,8 +25,8 @@ export class QrViewComponent implements OnChanges {
     private readonly _renderer = inject(Renderer2);
 
     private readonly _sdk = client.init({
-        host: environment.xsighub.host,
-        version: 'v=1.0',
+        api: environment.xsighub.api,
+        version: environment.xsighub.version,
     });
 
     async ngOnChanges(): Promise<void> {

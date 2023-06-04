@@ -51,7 +51,7 @@ export class SessionController {
         return this._sessionsService.findByPairingKey(pairingKey, { correlationId });
     }
 
-    @Patch(':pairingKey')
+    @Patch(':pairingKey/pair')
     pair(
         @CorrelationId() correlationId: string,
         @Param('pairingKey') pairingKey: string,
@@ -59,6 +59,16 @@ export class SessionController {
         this._logger.info(`[${this.pair.name}]`, { correlationId });
 
         return this._sessionsService.pair(pairingKey, { correlationId });
+    }
+
+    @Patch(':pairingKey/unpair')
+    unpair(
+        @CorrelationId() correlationId: string,
+        @Param('pairingKey') pairingKey: string,
+    ): Promise<SessionDto> {
+        this._logger.info(`[${this.unpair.name}]`, { correlationId });
+
+        return this._sessionsService.unpair(pairingKey, { correlationId });
     }
 
     @Delete()

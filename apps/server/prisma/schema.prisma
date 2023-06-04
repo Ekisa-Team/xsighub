@@ -38,6 +38,7 @@ model SessionReference {
   name                String
   documentPlaceholder String?
   signatures          SessionSignature[]
+  documents           SessionDocument[]
 
   sessionId Int
   session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -46,12 +47,23 @@ model SessionReference {
 }
 
 model SessionSignature {
-  id       Int     @id @default(autoincrement())
-  ingest   String
-  metadata String?
+  id            Int     @id @default(autoincrement())
+  signatureData String
+  metadata      String?
 
   referenceId Int
   reference   SessionReference @relation(fields: [referenceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map(name: "sessionSignature")
+}
+
+model SessionDocument {
+  id         Int     @id @default(autoincrement())
+  rawContent String
+  metadata   String?
+
+  referenceId Int
+  reference   SessionReference @relation(fields: [referenceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map(name: "sessionDocument")
 }

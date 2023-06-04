@@ -1,12 +1,13 @@
 import { CorrelationId } from '@lib/decorators';
 import { XsighubLoggerService } from '@lib/logger';
 import { ApiVersion } from '@lib/types';
-import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import {
     SessionSignatureCreateDto,
     SessionSignatureDto,
+    SessionSignatureMetadataLoadDto,
     SessionSignatureUpdateDto,
 } from '../dtos/session-signature.dto';
 import { SessionSignatureService } from '../services/session-signature.service';
@@ -35,6 +36,16 @@ export class SessionSignatureController {
         return this._sessionSignatureService.create(data, { correlationId });
     }
 
+    @Get(':signatureId')
+    findById(
+        @CorrelationId() correlationId: string,
+        @Param('signatureId') signatureId: number,
+    ): Promise<SessionSignatureDto> {
+        this._logger.info(`[${this.findById.name}]`, { correlationId });
+
+        return this._sessionSignatureService.findById(signatureId, { correlationId });
+    }
+
     @Put(':signatureId')
     update(
         @CorrelationId() correlationId: string,
@@ -44,6 +55,17 @@ export class SessionSignatureController {
         this._logger.info(`[${this.delete.name}]`, { correlationId });
 
         return this._sessionSignatureService.update(signatureId, data, { correlationId });
+    }
+
+    @Patch(':documentId/metadata/load')
+    loadMetadata(
+        @CorrelationId() correlationId: string,
+        @Param('documentId') documentId: number,
+        @Body() data: SessionSignatureMetadataLoadDto,
+    ): Promise<SessionSignatureDto> {
+        this._logger.info(`[${this.loadMetadata.name}]`, { correlationId });
+
+        return this._sessionSignatureService.loadMetadata(documentId, data, { correlationId });
     }
 
     @Delete(':signatureId')

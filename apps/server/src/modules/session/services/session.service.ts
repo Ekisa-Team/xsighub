@@ -2,8 +2,9 @@ import { generateKey } from '@lib/helpers';
 import { XsighubLoggerService } from '@lib/logger';
 import { PrismaService } from '@lib/prisma';
 import { ApiExtras } from '@lib/types/api-extras';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { SessionDto } from '../dtos/session.dto';
+import { sessionExceptions } from '../exceptions/session.exceptions';
 import { SessionGateway } from '../gateways/session.gateway';
 
 @Injectable()
@@ -30,9 +31,7 @@ export class SessionService {
         });
 
         if (session) {
-            throw new BadRequestException(
-                `The IP address ${clientIp} has an existing session. Please ensure that you destroy any existing session before attempting to create a new one.`,
-            );
+            throw new sessionExceptions.SessionAlreadyCreatedByIp({ clientIp });
         }
 
         const created = await this._prisma.session.create({
@@ -50,6 +49,7 @@ export class SessionService {
                 references: {
                     include: {
                         signatures: true,
+                        documents: true,
                     },
                 },
             },
@@ -71,6 +71,7 @@ export class SessionService {
                 references: {
                     include: {
                         signatures: true,
+                        documents: true,
                     },
                 },
             },
@@ -80,9 +81,7 @@ export class SessionService {
         });
 
         if (!session) {
-            throw new NotFoundException(
-                `The session associated with the ID ${sessionId} could not be found.`,
-            );
+            throw new sessionExceptions.SessionNotFoundById({ sessionId });
         }
 
         return session;
@@ -97,6 +96,7 @@ export class SessionService {
                 references: {
                     include: {
                         signatures: true,
+                        documents: true,
                     },
                 },
             },
@@ -108,9 +108,7 @@ export class SessionService {
         });
 
         if (!session) {
-            throw new NotFoundException(
-                `The session associated with the IP address ${clientIp} could not be found.`,
-            );
+            throw new sessionExceptions.SessionNotFoundByClientIp({ clientIp });
         }
 
         return session;
@@ -125,6 +123,7 @@ export class SessionService {
                 references: {
                     include: {
                         signatures: true,
+                        documents: true,
                     },
                 },
             },
@@ -132,16 +131,14 @@ export class SessionService {
         });
 
         if (!session) {
-            throw new NotFoundException(
-                `The session associated with the pairing key ${pairingKey} could not be found.`,
-            );
+            throw new sessionExceptions.SessionNotFoundByPairingKey({ pairingKey });
         }
 
         return session;
     }
 
     async pair(pairingKey: string, { correlationId }: ApiExtras): Promise<SessionDto> {
-        this._logger.info(`[${this.destroy.name}]`, { correlationId });
+        this._logger.info(`[${this.unpair.name}]`, { correlationId });
 
         const session = await this._prisma.session.findFirst({
             include: {
@@ -153,15 +150,7 @@ export class SessionService {
         });
 
         if (!session) {
-            throw new NotFoundException(
-                `The session associated with the pairing key ${pairingKey} could not be found.`,
-            );
-        }
-
-        if (session.connection.isPaired) {
-            throw new BadRequestException(
-                `The session with the pairing key ${pairingKey} is already paired.`,
-            );
+            throw new sessionExceptions.SessionNotFoundByPairingKey({ pairingKey });
         }
 
         const updated = await this._prisma.session.update({
@@ -181,12 +170,59 @@ export class SessionService {
                 references: {
                     include: {
                         signatures: true,
+                        documents: true,
                     },
                 },
             },
         });
 
         await this._sessionGateway.handleSessionPaired(updated, {
+            correlationId,
+        });
+
+        return updated;
+    }
+
+    async unpair(pairingKey: string, { correlationId }: ApiExtras): Promise<SessionDto> {
+        this._logger.info(`[${this.unpair.name}]`, { correlationId });
+
+        const session = await this._prisma.session.findFirst({
+            include: {
+                connection: true,
+            },
+            where: {
+                pairingKey,
+            },
+        });
+
+        if (!session) {
+            throw new sessionExceptions.SessionNotFoundByPairingKey({ pairingKey });
+        }
+
+        const updated = await this._prisma.session.update({
+            data: {
+                connection: {
+                    update: {
+                        isPaired: false,
+                        pairedAt: null,
+                    },
+                },
+            },
+            where: {
+                pairingKey,
+            },
+            include: {
+                connection: true,
+                references: {
+                    include: {
+                        signatures: true,
+                        documents: true,
+                    },
+                },
+            },
+        });
+
+        await this._sessionGateway.handleSessionUnpaired(updated, {
             correlationId,
         });
 
@@ -205,9 +241,7 @@ export class SessionService {
         });
 
         if (!session) {
-            throw new NotFoundException(
-                `The IP address ${clientIp} doesn't have any associated sessions to be destroyed.`,
-            );
+            throw new sessionExceptions.SessionNotFoundByClientIp({ clientIp });
         }
 
         const destroyed = await this._prisma.session.delete({
@@ -219,6 +253,7 @@ export class SessionService {
                 references: {
                     include: {
                         signatures: true,
+                        documents: true,
                     },
                 },
             },

@@ -1,9 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild, effect, inject, signal } from '@angular/core';
-import { Session, SessionReference, __sessionSocketEvents__ } from '@ekisa-xsighub/core';
+import {
+    Session,
+    SessionDocument,
+    SessionReference,
+    SessionSignature,
+    __sessionSocketEvents__,
+} from '@ekisa-xsighub/core';
 import { client } from '@ekisa-xsighub/sdk';
+import { randAvatar, randCountry, randEmail, randFullName, randRole } from '@ngneat/falso';
 import { Socket } from 'ngx-socket-io';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { ConnectionInfoComponent } from './connection-info/connection-info.component';
 import { QrViewComponent } from './qr-view/qr-view.component';
@@ -13,6 +20,9 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 type SocketEvent = {
     message: string;
     session: Session;
+    source?: 'session' | 'reference' | 'signature' | 'document';
+    action?: 'create' | 'update' | 'delete';
+    data?: Session | SessionReference | SessionSignature | SessionDocument;
 };
 
 const COMPONENTS = [
@@ -34,8 +44,8 @@ export class AppComponent implements OnInit {
     private readonly _socket = inject(Socket);
 
     private readonly _sdk = client.init({
-        host: environment.xsighub.host,
-        version: 'v=1.0',
+        api: environment.xsighub.api,
+        version: environment.xsighub.version,
     });
 
     pairingKey = signal<string | null>(null);
@@ -68,7 +78,7 @@ export class AppComponent implements OnInit {
 
     destroySession = () => this._sdk.sessions.destroy().catch(alert);
 
-    handleCreateStandalone(reference: SessionReference): void {
+    handleCreateReference(reference: SessionReference): void {
         this._sdk.references.create({
             type: reference.type,
             name: reference.name,
@@ -77,10 +87,10 @@ export class AppComponent implements OnInit {
         });
     }
 
-    handleDeleteStandalone(referenceId: number): void {
+    handleDeleteReference(referenceId: number): void {
         if (
             confirm(
-                'Si se elimina una referencia, se pierden todas las firmas asociadas. ¿Desea continuar?',
+                'Si se elimina una referencia, se pierden todas las firmas y documentos asociados. ¿Desea continuar?',
             )
         ) {
             this._sdk.references.delete(referenceId);
@@ -88,23 +98,48 @@ export class AppComponent implements OnInit {
     }
 
     private _setupSocketEvents(): void {
-        this._socket
-            .fromEvent<SocketEvent>(__sessionSocketEvents__.created)
-            .pipe(map((event) => event.session))
-            .subscribe(this.session.set);
+        [
+            __sessionSocketEvents__.created,
+            __sessionSocketEvents__.paired,
+            __sessionSocketEvents__.unpaired,
+        ].forEach((event) =>
+            this._socket
+                .fromEvent<SocketEvent>(event)
+                .pipe(
+                    tap(({ session, message }) => console.log(message, { session })),
+                    map(({ session }) => session),
+                )
+                .subscribe(this.session.set),
+        );
 
         this._socket
             .fromEvent<SocketEvent>(__sessionSocketEvents__.updated)
-            .pipe(map((event) => event.session))
-            .subscribe(this.session.set);
+            .pipe(tap(({ message }) => console.log(message)))
+            .subscribe(({ session, source, action, data }) => {
+                console.log({ session, source, action, data });
 
-        this._socket
-            .fromEvent<SocketEvent>(__sessionSocketEvents__.paired)
-            .pipe(map((event) => event.session))
-            .subscribe(this.session.set);
+                this.session.set(session);
+
+                if (source === 'document' && action === 'create' && data) {
+                    client.documents.loadMetadata(data.id, {
+                        ingest: {
+                            paciente: randFullName(),
+                            pacienteAvatar: randAvatar(),
+                            pacientePais: randCountry(),
+                            acudiente: randFullName({ gender: 'female' }),
+                            acudienteAvatar: randAvatar(),
+                            acudienteEmail: randEmail(),
+                            medico: randFullName(),
+                            medicoAvatar: randAvatar(),
+                            medicoRol: randRole(),
+                        },
+                    });
+                }
+            });
 
         this._socket
             .fromEvent<SocketEvent>(__sessionSocketEvents__.destroyed)
+            .pipe(tap(({ message }) => console.log(message)))
             .subscribe(() => this.session.set(null));
     }
 }

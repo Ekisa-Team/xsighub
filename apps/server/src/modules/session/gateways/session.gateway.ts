@@ -8,6 +8,9 @@ import {
     WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { SessionDocumentDto } from '../dtos/session-document.dto';
+import { SessionReferenceDto } from '../dtos/session-reference.dto';
+import { SessionSignatureDto } from '../dtos/session-signature.dto';
 import { SessionDto } from '../dtos/session.dto';
 
 @WebSocketGateway({
@@ -41,12 +44,23 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         });
     }
 
-    async handleSessionUpdated(session: SessionDto, { correlationId }: ApiExtras) {
+    async handleSessionUpdated(
+        session: SessionDto,
+        { correlationId }: ApiExtras,
+        options: {
+            source: 'session' | 'reference' | 'signature' | 'document';
+            action: 'create' | 'update' | 'delete';
+            data: SessionDto | SessionReferenceDto | SessionSignatureDto | SessionDocumentDto;
+        },
+    ) {
         this._logger.info(`[${this.handleSessionUpdated.name}]`, { correlationId });
 
         this._server.emit('sessionUpdated', {
             message: `Session updated: ${session.id}`,
             session,
+            source: options.source,
+            action: options.action,
+            data: options.data,
         });
     }
 
@@ -55,6 +69,15 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
         this._server.emit('sessionPaired', {
             message: `Session paired: ${session.id}`,
+            session,
+        });
+    }
+
+    async handleSessionUnpaired(session: SessionDto, { correlationId }: ApiExtras) {
+        this._logger.info(`[${this.handleSessionUnpaired.name}]`, { correlationId });
+
+        this._server.emit('sessionUnpaired', {
+            message: `Session unpaired: ${session.id}`,
             session,
         });
     }

@@ -1,13 +1,15 @@
 import { XsighubLoggerService } from '@lib/logger';
 import { PrismaService } from '@lib/prisma';
 import { ApiExtras } from '@lib/types/api-extras';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
     SessionReferenceCreateDto,
     SessionReferenceDto,
     SessionReferenceUpdateDto,
 } from '../dtos/session-reference.dto';
 import { SessionReferenceType } from '../enums/session-reference.enum';
+import { sessionReferenceExceptions } from '../exceptions/session-reference.exceptions';
+import { sessionExceptions } from '../exceptions/session.exceptions';
 import { SessionGateway } from '../gateways/session.gateway';
 import { SessionService } from './session.service';
 
@@ -38,18 +40,14 @@ export class SessionReferenceService {
         });
 
         if (!session) {
-            throw new NotFoundException(
-                `The session associated with the ID ${data.sessionId} could not be found.`,
-            );
+            throw new sessionExceptions.SessionNotFoundById({ sessionId: data.sessionId });
         }
 
         if (
             data.type === SessionReferenceType.Standalone &&
             session.references.some((ref) => ref.type === SessionReferenceType.Standalone)
         ) {
-            throw new NotFoundException(
-                `There can only be a single standalone reference per session.`,
-            );
+            throw new sessionReferenceExceptions.SessionReferenceUniqueStandalone();
         }
 
         const created = await this._prisma.sessionReference.create({ data });
@@ -58,6 +56,11 @@ export class SessionReferenceService {
             await this._sessionService.findById(created.sessionId, { correlationId }),
             {
                 correlationId,
+            },
+            {
+                source: 'reference',
+                action: 'create',
+                data: created,
             },
         );
 
@@ -78,9 +81,7 @@ export class SessionReferenceService {
         });
 
         if (!reference) {
-            throw new NotFoundException(
-                `The reference associated with the ID ${referenceId} could not be found.`,
-            );
+            throw new sessionReferenceExceptions.SessionReferenceNotFoundById({ referenceId });
         }
 
         const updated = await this._prisma.sessionReference.update({
@@ -92,6 +93,11 @@ export class SessionReferenceService {
             await this._sessionService.findById(updated.sessionId, { correlationId }),
             {
                 correlationId,
+            },
+            {
+                source: 'reference',
+                action: 'update',
+                data: updated,
             },
         );
 
@@ -108,9 +114,7 @@ export class SessionReferenceService {
         });
 
         if (!reference) {
-            throw new NotFoundException(
-                `The reference associated with the ID ${referenceId} could not be found.`,
-            );
+            throw new sessionReferenceExceptions.SessionReferenceNotFoundById({ referenceId });
         }
 
         const deleted = await this._prisma.sessionReference.delete({
@@ -123,6 +127,11 @@ export class SessionReferenceService {
             await this._sessionService.findById(deleted.sessionId, { correlationId }),
             {
                 correlationId,
+            },
+            {
+                source: 'reference',
+                action: 'delete',
+                data: deleted,
             },
         );
 

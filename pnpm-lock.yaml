@@ -236,6 +236,9 @@ importers:
       '@ekisa-xsighub/sdk':
         specifier: workspace:^
         version: link:../../pkg/xsighub-sdk
+      '@ngneat/falso':
+        specifier: ^6.4.0
+        version: 6.4.0
       ngx-socket-io:
         specifier: ^4.5.1
         version: 4.5.1(@angular/common@16.0.2)(@angular/core@16.0.2)(rxjs@7.8.0)
@@ -881,7 +884,7 @@ packages:
       '@babel/compat-data': 7.22.3
       '@babel/core': 7.19.3
       '@babel/helper-validator-option': 7.21.0
-      browserslist: 4.21.7
+      browserslist: 4.21.5
       lru-cache: 5.1.1
       semver: 6.3.0
     dev: true
@@ -909,7 +912,7 @@ packages:
       '@babel/compat-data': 7.22.3
       '@babel/core': 7.22.1
       '@babel/helper-validator-option': 7.21.0
-      browserslist: 4.21.7
+      browserslist: 4.21.5
       lru-cache: 5.1.1
       semver: 6.3.0
     dev: true
@@ -3418,6 +3421,13 @@ packages:
       reflect-metadata: 0.1.13
       rxjs: 7.8.0
       tslib: 2.4.1
+
+  /@ngneat/falso@6.4.0:
+    resolution: {integrity: sha512-f6r036h2fX/AoHw1eV2t8+qWQwrbSrozs3zXMhhwoO7SJBc+DGMxRWEhFeYIinfwx0uhUH8ggx5+PDLzYESLOA==}
+    dependencies:
+      seedrandom: 3.0.5
+      uuid: 8.3.2
+    dev: false
 
   /@ngtools/webpack@16.0.2(@angular/compiler-cli@16.0.2)(typescript@4.9.4)(webpack@5.80.0):
     resolution: {integrity: sha512-8nPAOs2JLdMrAUf3sMkySzh66sPIkukO6HT8KVj726Dqm0Jtabjnxh0EI15Gkykj7HqH0Zw7/VyxpNQRfTA2UQ==}
@@ -10513,6 +10523,10 @@ packages:
     resolution: {integrity: sha512-6aU+Rwsezw7VR8/nyvKTx8QpWH9FrcYiXXlqC4z5d5XQBDRqtbfsRjnwGyqbi3gddNtWHuEk9OANUotL26qKUw==}
     dev: true
 
+  /seedrandom@3.0.5:
+    resolution: {integrity: sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==}
+    dev: false
+
   /select-hose@2.0.0:
     resolution: {integrity: sha512-mEugaLK+YfkijB4fx0e6kImuJdCIt2LxCRcbEYPqRGCs4F2ogyfZU5IAZRdjCP8JPq2AtdNoC/Dux63d9Kiryg==}
     dev: true
@@ -12015,7 +12029,6 @@ packages:
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
-    dev: true
 
   /uuid@9.0.0:
     resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}

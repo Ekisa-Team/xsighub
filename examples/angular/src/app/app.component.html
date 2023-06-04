@@ -22,8 +22,8 @@
         <section class="mt-6 grid grid-cols-1 gap-6">
             <app-references
                 [session]="currentSession"
-                (createReference)="handleCreateStandalone($event)"
-                (deleteReference)="handleDeleteStandalone($event)"
+                (createReference)="handleCreateReference($event)"
+                (deleteReference)="handleDeleteReference($event)"
             />
         </section>
     </ng-container>

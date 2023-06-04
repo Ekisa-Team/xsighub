@@ -7,6 +7,7 @@ export interface SdkSessions {
     findByIpAddress(): Promise<Session>;
     findByPairingKey(pairingKey: string): Promise<Session>;
     pair(pairingKey: string): Promise<Session>;
+    unpair(pairingKey: string): Promise<Session>;
     destroy(): Promise<Session>;
 }
 
@@ -14,7 +15,7 @@ export class Sessions implements SdkSessions {
     api: string;
 
     constructor(private readonly config: SdkClientConfig) {
-        this.api = `${this.config.host}/api/${this.config.version}/sessions`;
+        this.api = `${this.config.api}/${this.config.version}/sessions`;
     }
 
     async create(): Promise<Session> {
@@ -32,7 +33,13 @@ export class Sessions implements SdkSessions {
     }
 
     async pair(pairingKey: string): Promise<Session> {
-        return fetch(`${this.api}/${pairingKey}/connections/pair`, {
+        return fetch(`${this.api}/${pairingKey}/pair`, {
+            method: 'PATCH',
+        }).then(handleResponse);
+    }
+
+    async unpair(pairingKey: string): Promise<Session> {
+        return fetch(`${this.api}/${pairingKey}/unpair`, {
             method: 'PATCH',
         }).then(handleResponse);
     }

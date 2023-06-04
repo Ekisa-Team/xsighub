@@ -8,6 +8,7 @@ import {
     Sessions,
     Signatures,
 } from './services';
+import { Documents, SdkDocuments } from './services/sdk-documents';
 import { SdkClientConfig } from './types';
 
 export interface SdkClient {
@@ -15,6 +16,7 @@ export interface SdkClient {
     sessions: SdkSessions;
     references: SdkReferences;
     signatures: SdkSignatures;
+    documents: SdkDocuments;
     qr: SdkQr;
 }
 
@@ -22,6 +24,7 @@ const createSdkClient = (): SdkClient => {
     let sdkSessions: SdkSessions;
     let sdkReferences: SdkReferences;
     let sdkSignatures: SdkSignatures;
+    let sdkDocuments: SdkDocuments;
     let sdkQr: SdkQr;
 
     let initialized = false;
@@ -39,6 +42,7 @@ const createSdkClient = (): SdkClient => {
             sdkSessions = new Sessions(config);
             sdkReferences = new References(config);
             sdkSignatures = new Signatures(config);
+            sdkDocuments = new Documents(config);
             sdkQr = new Qr();
 
             initialized = true;
@@ -56,6 +60,10 @@ const createSdkClient = (): SdkClient => {
         get signatures(): SdkSignatures {
             assertInitialization();
             return sdkSignatures;
+        },
+        get documents(): SdkDocuments {
+            assertInitialization();
+            return sdkDocuments;
         },
         get qr(): SdkQr {
             assertInitialization();

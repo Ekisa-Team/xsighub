@@ -1,5 +1,5 @@
 import { PartialType, PickType } from '@nestjs/swagger';
-import { SessionSignature } from '@prisma/client';
+import { SessionDocument } from '@prisma/client';
 import { Expose } from 'class-transformer';
 import {
     IsDefined,
@@ -13,14 +13,14 @@ import {
 } from 'class-validator';
 import { SessionReferenceDto } from './session-reference.dto';
 
-export class SessionSignatureDto implements SessionSignature {
+export class SessionDocumentDto implements SessionDocument {
     @Expose({ toClassOnly: true })
     @IsNotEmpty()
     id: number;
 
     @IsNotEmpty()
     @IsString()
-    signatureData: string;
+    rawContent: string;
 
     @IsOptional()
     @IsString()
@@ -31,14 +31,24 @@ export class SessionSignatureDto implements SessionSignature {
     referenceId: SessionReferenceDto['id'];
 }
 
-export class SessionSignatureCreateDto extends PickType(SessionSignatureDto, [
-    'signatureData',
+export class SessionDocumentCreateDto extends PickType(SessionDocumentDto, [
+    'rawContent',
     'referenceId',
 ] as const) {}
 
-export class SessionSignatureUpdateDto extends PartialType(SessionSignatureCreateDto) {}
+export class SessionDocumentUpdateDto extends PartialType(SessionDocumentCreateDto) {}
 
-export class SessionSignatureMetadataLoadDto {
+export class SessionDocumentSignatureCreateDto {
+    @IsNotEmpty()
+    @IsString()
+    signatureName: string;
+
+    @IsNotEmpty()
+    @IsString()
+    signatureData: string;
+}
+
+export class SessionDocumentMetadataLoadDto {
     @IsDefined()
     @IsNotEmptyObject()
     @IsObject()
