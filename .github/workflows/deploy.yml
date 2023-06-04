@@ -7,6 +7,14 @@ on:
   workflow_dispatch:
 
 jobs:
+  purge-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: kolpav/purge-artifacts-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          expire-in: 0
+
   build:
     runs-on: ubuntu-latest
 
@@ -29,11 +37,14 @@ jobs:
           pnpm install
           pnpm server:build
 
+      - name: Zip dist files for upload between jobs
+        run: cd ./apps/server/dist && zip --symlinks -r xsighub.zip ./*
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: xsighub-app
-          path: ./apps/server/dist
+          path: ./apps/server/xsighub.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -55,4 +66,7 @@ jobs:
           app-name: 'xsighub'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F72962858F07443F9FBA6688EA84DCF4 }}
-          package: .
+          package: xsighub.zip
+
+      - name: Delete zip file
+        run: rm nest.zip
