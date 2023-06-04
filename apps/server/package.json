@@ -7,11 +7,11 @@
   "license": "UNLICENSED",
   "scripts": {
     "postinstall": "npx prisma generate",
-    "build": "nest build",
+    "build": "pnpm prisma:production:push && nest build && cp ./prisma/production.db dist/",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "dev": "nest start --watch",
     "dev:debug": "nest start --debug --watch",
-    "preview": "node dist/main",
+    "preview": "dotenv -e envs/production.env -- node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
