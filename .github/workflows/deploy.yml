@@ -3,7 +3,7 @@ name: Build and deploy server to Azure Web App
 on:
   push:
     branches:
-      - main
+      - trunk
   workflow_dispatch:
 
 jobs:
@@ -32,8 +32,8 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: node-app
-          path: ./pkg/server/dist
+          name: xsighub-app
+          path: ./apps/server/dist
 
   deploy:
     runs-on: ubuntu-latest
@@ -46,7 +46,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: node-app
+          name: xsighub-app
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
@@ -54,5 +54,5 @@ jobs:
         with:
           app-name: 'xsighub'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_299CBCE48C734E1681F7B905AA767C2B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F72962858F07443F9FBA6688EA84DCF4 }}
           package: .
