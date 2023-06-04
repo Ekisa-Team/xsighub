@@ -12,6 +12,7 @@
     "server:serve": "pnpm --filter xsighub-server serve",
     "server:test": "pnpm --filter xsighub-server test",
     "server:preview": "pnpm --filter xsighub-server preview",
+    "server:preview:production": "pnpm --filter xsighub-server preview:production",
     "server:prisma:generate": "pnpm --filter xsighub-server prisma:generate",
     "server:prisma:development:migrate": "pnpm --filter xsighub-server prisma:development:migrate",
     "server:prisma:development:pull": "pnpm --filter xsighub-server prisma:development:pull",
