@@ -38,13 +38,13 @@ jobs:
           pnpm server:build
 
       - name: Zip files for upload between jobs
-        run: cd ./apps/server && zip --symlinks -r xsighub.zip *
+        run: zip --symlinks -r xsighub.zip *
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: xsighub-server
-          path: ./apps/server/xsighub.zip
+          path: xsighub.zip
 
   deploy:
     runs-on: ubuntu-latest
