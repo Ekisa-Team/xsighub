@@ -31,6 +31,16 @@ export class SessionController {
         return this._sessionsService.create(clientIp, userAgent.ua, { correlationId });
     }
 
+    @Get('test/me')
+    findByIp(
+        @CorrelationId() correlationId: string,
+        @ClientIp() clientIp: string,
+    ): Promise<string> {
+        this._logger.info(`[${this.findByIp.name}]`, { correlationId });
+
+        return Promise.resolve(clientIp);
+    }
+
     @Get()
     findByIpAddress(
         @CorrelationId() correlationId: string,
