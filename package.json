@@ -1,6 +1,6 @@
 {
   "name": "xsighub",
-  "version": "0.1.7-beta",
+  "version": "0.1.8-beta",
   "description": "Sistema Hub para capturar, transferir y mostrar las firmas de los usuarios en aplicaciones móviles y web en tiempo real.",
   "author": "Ekisa-Team",
   "license": "ISC",
