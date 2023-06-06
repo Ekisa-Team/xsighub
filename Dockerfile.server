@@ -1,24 +1,28 @@
-# Base image
-FROM node:18-alpine 
+FROM node:20-alpine as base
 
-# Set the working directory
-WORKDIR /usr/apps/server
+# ;-------------;
+# ; Build stage ;
+# ;-------------;
+FROM base as builder
 
-# Install pnpm package manager
+WORKDIR /app
+
 RUN npm i -g pnpm
 
-# Copy package.json and pnpm-lock.yaml
-COPY --chown=node:node pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY . .
 
-# Install dependencies, build the app, and remove dev dependencies
-RUN pnpm install --frozen-lockfile && \
-    pnpm run server:build && \
-    pnpm prune --prod && \
-    rm -rf /root/.pnpm-store
+RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
+    pnpm install --frozen-lockfile && \
+    pnpm server:build && \
+    pnpm prune --prod
 
-# Expose port 3000
-EXPOSE 3000
+# ;---------------;
+# ; Runtime stage ;
+# ;---------------;
+FROM base as runtime
 
-# Start the node server
-CMD ["node", "pkg/server/dist/server.mjs"]
+WORKDIR /app
+
+COPY --from=builder /app/ ./
+
+CMD ["node", "apps/server/dist/main.js"]

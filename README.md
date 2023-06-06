@@ -37,6 +37,16 @@
   pnpm examples:angular
   ```
 
-## Guía de contribución
+## Docker
 
-<https://github.com/Ekisa-Team/xsighub/CONTRIBUTING>
+### Compilar imágenes
+
+```sh
+docker buildx build -t xsighub-server:latest -f Dockerfile.server .
+```
+
+### Ejecutar imágenes
+
+```sh
+docker run --env-file apps/server/envs/development.env -p 3000:3000 -d xsighub-server
+```
