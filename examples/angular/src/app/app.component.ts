@@ -116,8 +116,6 @@ export class AppComponent implements OnInit {
             .fromEvent<SocketEvent>(__sessionSocketEvents__.updated)
             .pipe(tap(({ message }) => console.log(message)))
             .subscribe(({ session, source, action, data }) => {
-                console.log({ session, source, action, data });
-
                 this.session.set(session);
 
                 if (source === 'document' && action === 'create' && data) {
