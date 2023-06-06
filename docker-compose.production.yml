@@ -8,19 +8,19 @@ services:
         environment:            
             APP_PORT: 3000
             APP_GLOBAL_PREFIX: api
-            APP_VERSIONING_ENABLED: true
+            APP_VERSIONING_ENABLED: 'true'
             APP_VERSIONING_TYPE: URI
             APP_VERSIONING_PREFIX: v=
-            APP_LOGGING_ENABLED: true
-            APP_LOGGING_ENABLE_PRETTY_LOGS: false
-            APP_LOGGING_DISPLAY_REQUEST_LOGS: true
-            APP_LOGGING_DISPLAY_RESPONSE_LOGS: true
-            SERVER_TIMEOUT_ENABLED: true
+            APP_LOGGING_ENABLED: 'true'
+            APP_LOGGING_ENABLE_PRETTY_LOGS: 'false'
+            APP_LOGGING_DISPLAY_REQUEST_LOGS: 'true'
+            APP_LOGGING_DISPLAY_RESPONSE_LOGS: 'true'
+            SERVER_TIMEOUT_ENABLED: 'true'
             SERVER_TIMEOUT_VALUE: 6000
-            SECURITY_HELMET_ENABLED: true
-            SECURITY_CORS_ENABLED: true
+            SECURITY_HELMET_ENABLED: 'true'
+            SECURITY_CORS_ENABLED: 'true'
             SECURITY_CORS_ALLOWED_ORIGIN: '*'
-            SECURITY_THROTTLE_ENABLED: true
+            SECURITY_THROTTLE_ENABLED: 'true'
             SECURITY_THROTTLE_TTL: 1
             SECURITY_THROTTLE_LIMIT: 3
         ports:
