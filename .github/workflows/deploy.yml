@@ -1,10 +1,7 @@
-name: Build and deploy server to Azure Web App
+name: Deploy server image to Azure Web App
 
-on:
-  push:
-    branches:
-      - trunk
-  workflow_dispatch:
+on: workflow_call
+
 
 jobs:
   purge-artifacts:

@@ -1,0 +1,28 @@
+name: Main Workflow
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'v*.*.*-stable'
+      - 'v*.*.*-alpha'
+      - 'v*.*.*-beta'
+      - 'v*.*.*-rc.*'
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    uses: ./.github/workflows/release.yaml
+
+  release-server:
+    uses: ./.github/workflows/release-server.yaml
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+    needs: [release]
+
+  # deploy:
+  #   uses: ./.github/workflows/deploy.yaml
+  #   needs: [release-server]
