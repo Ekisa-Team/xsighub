@@ -96,3 +96,7 @@ echo "Created git tag $new_version_prefixed"
 # Push git tag
 git push origin "$new_version_prefixed"
 echo "Pushed git tag $new_version_prefixed. Check https://github.com/Ekisa-Team/xsighub/actions to follow up the active workflow."
+
+# Deploy packages to NPM
+pnpm core:release
+pnpm sdk:release
