@@ -37,6 +37,14 @@
   pnpm examples:angular
   ```
 
+### Realizar despliegue
+
+Para desplegar una nueva versión de este proyecto, se deben seguir los siguientes pasos:
+
+1. Ejecutar el script `./scripts/release.sh` y seguir las instrucciones para especificar el tipo de versión que desea publicar ("major", "minor" o "patch") y si desea agregar un alcance a la versión (por ejemplo, "alpha", "beta" o "stable").
+
+2. Verificar que los cambios y la etiqueta de Git se hayan publicado correctamente en el repositorio remoto. Adicionalmente, debe haber un workflow generando generando la imagen de docker en ghcr y los paquetes de la aplicación deberían estar publicados en NPM.
+
 ## Docker
 
 ### Compilar imágenes
