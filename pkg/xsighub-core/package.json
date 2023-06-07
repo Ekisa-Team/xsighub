@@ -1,6 +1,6 @@
 {
   "name": "@ekisa-xsighub/core",
-  "version": "0.0.0",
+  "version": "0.1.8-beta",
   "description": "El motor central de Xsighub sin ajustes preestablecidos.",
   "author": "Ekisa-Team",
   "license": "MIT",
@@ -33,7 +33,7 @@
   "scripts": {
     "dev": "unbuild --stub",
     "build": "rimraf dist && unbuild",
-    "release": "pnpm publish --access public"
+    "release": "pnpm build && pnpm publish --access public"
   },
   "devDependencies": {
     "@types/qrcode": "^1.5.0",
