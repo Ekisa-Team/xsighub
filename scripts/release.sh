@@ -67,21 +67,31 @@ fi
 
 new_version_prefixed="v${new_version}"
 
-# Create git tag with new version
-git tag -a "$new_version_prefixed" -m "Release $new_version_prefixed"
-echo "Created git tag $new_version_prefixed"
+# Loop through all package.json files in ./pkg/ directory and update their version numbers
+for package in ./pkg/*/package.json; do
+    # Read current version from package.json
+    version=$(awk -F'"' '/version/{print $4}' "$package")
 
-# Update package.json with new version
+    # Update package.json with new version
+    sed -i "s/\"version\": \"$version\"/\"version\": \"$new_version\"/" "$package"
+    echo "Updated $package with version $new_version"
+done
+
+# Update root package.json with new version
 sed -i "s/\"version\": \"$version\"/\"version\": \"$new_version\"/" package.json
 echo "Updated package.json with version $new_version"
 
 # Commit changes to package.json
-git commit -m "release: bump version to $new_version" --no-verify package.json
+git commit -m "release: bump version to $new_version" --no-verify .
 echo "Commited changes to package.json"
 
 # Push package.json changes
 git push origin HEAD
 echo "Pushed package.json changes"
+
+# Create git tag with new version
+git tag -a "$new_version_prefixed" -m "Release $new_version_prefixed"
+echo "Created git tag $new_version_prefixed"
 
 # Push git tag
 git push origin "$new_version_prefixed"
