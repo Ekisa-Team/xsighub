@@ -1,11 +1,5 @@
-- @juanmesa2097 @JuanRenteM
+- @juanmesa2097 @JuanRenteM @napster1582
 
-# Apps
-
-/apps/server/ @juanmesa2097 @JuanRenteM
-/examples/angular/ @juanmesa2097 @JuanRenteM
-
-# Packages
-
-/pkg/xsighub-core/ @juanmesa2097 @JuanRenteM
-/pkg/xsighub-sdk/ @juanmesa2097 @JuanRenteM
+# Apps and Packages
+/apps/* @juanmesa2097 @JuanRenteM @napster1582
+/packages/* @juanmesa2097 @JuanRenteM @napster1582

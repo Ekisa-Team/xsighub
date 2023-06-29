@@ -1,0 +1,8 @@
+{
+  "name": "@ekisa-xsighub/tsconfig",
+  "version": "0.1.10-beta",
+  "private": true,
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

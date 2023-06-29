@@ -19,21 +19,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ekisa-Team/xsighub/tree/main/pkg/sdk"
+    "url": "https://github.com/Ekisa-Team/xsighub/tree/trunk/packages/sdk"
   },
   "bugs": {
     "url": "https://github.com/Ekisa-Team/xsighub/issues"
   },
-  "homepage": "https://github.com/Ekisa-Team/xsighub/tree/main/pkg/sdk",
+  "homepage": "https://github.com/Ekisa-Team/xsighub/tree/trunk/packages/sdk",
   "keywords": [
     "Ekisa",
     "Ekisa sdk",
     "Ekisa signature"
   ],
   "scripts": {
-    "dev": "unbuild --stub",
     "build": "rimraf dist && unbuild",
-    "release": "pnpm build && pnpm publish --access public"
+    "release": "pnpm build && pnpm publish --access public",
+    "lint": "eslint .",
+    "format": "prettier --write --ignore-path=../../.prettierignore ."
   },
   "dependencies": {
     "@ekisa-xsighub/core": "workspace:^",
@@ -41,6 +42,8 @@
   },
   "devDependencies": {
     "@types/qrcode": "^1.5.0",
+    "@ekisa-xsighub/eslint-config": "workspace:^",
+    "@ekisa-xsighub/tsconfig": "workspace:^",
     "rimraf": "^5.0.0",
     "unbuild": "^1.2.1"
   }

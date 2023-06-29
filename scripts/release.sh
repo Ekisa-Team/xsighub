@@ -60,15 +60,19 @@ patch)
     ;;
 esac
 
+new_version_prefixed="v${new_version}"
+
 # Append release scope (if any) to new version
 if [ -n "$release_scope" ]; then
     new_version="${new_version}-${release_scope}"
 fi
 
-new_version_prefixed="v${new_version}"
+# Update root package.json with new version
+sed -i "s/\"version\": \"$version\"/\"version\": \"$new_version\"/" "$(pwd)/package.json"
+echo "Updated package.json with version $new_version"
 
-# Loop through all package.json files in ./pkg/ directory and update their version numbers
-for package in ./pkg/*/package.json; do
+# Loop through all package.json files in ./packages/ directory and update their version numbers
+for package in ./packages/*/package.json; do
     # Read current version from package.json
     version=$(awk -F'"' '/version/{print $4}' "$package")
 
@@ -76,10 +80,6 @@ for package in ./pkg/*/package.json; do
     sed -i "s/\"version\": \"$version\"/\"version\": \"$new_version\"/" "$package"
     echo "Updated $package with version $new_version"
 done
-
-# Update root package.json with new version
-sed -i "s/\"version\": \"$version\"/\"version\": \"$new_version\"/" package.json
-echo "Updated package.json with version $new_version"
 
 # Commit changes to package.json
 git commit -m "release: bump version to $new_version" --no-verify .
@@ -97,7 +97,7 @@ echo "Created git tag $new_version_prefixed"
 git push origin "$new_version_prefixed"
 
 # Deploy packages to NPM
-pnpm core:release
-pnpm sdk:release
+pnpm --filter core release
+pnpm --filter sdk release
 
 echo "Pushed git tag $new_version_prefixed. Check https://github.com/Ekisa-Team/xsighub/actions to follow up the active workflow."

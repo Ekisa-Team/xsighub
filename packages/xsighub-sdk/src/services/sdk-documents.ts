@@ -13,12 +13,10 @@ export interface SdkDocuments {
     findById(documentId: number): Promise<SessionDocument>;
     update(signatureId: number, data: SessionDocument): Promise<SessionDocument>;
     attach(documentId: number, data: SessionDocumentSignature): Promise<SessionDocument>;
-    loadMetadata(documentId: number, data: SessionDocumentMetadata): Promise<SessionDocument>;
     delete(signatureId: number): Promise<SessionDocument>;
-    extractSignatures(options: { rawContent: string }): Promise<{
-        key: string;
-        signatureData: string;
-    }>;
+    loadMetadata(documentId: number, data: SessionDocumentMetadata): Promise<SessionDocument>;
+    populateMetadata(rawContent: string, data: SessionDocumentMetadata): string;
+    extractSignatures(rawContent: string): { [key: string]: string };
 }
 
 export class Documents implements SdkDocuments {
@@ -62,6 +60,12 @@ export class Documents implements SdkDocuments {
         }).then(handleResponse);
     }
 
+    async delete(documentId: number): Promise<SessionDocument> {
+        return fetch(`${this.api}/${documentId}`, {
+            method: 'DELETE',
+        }).then(handleResponse);
+    }
+
     async loadMetadata(
         documentId: number,
         data: SessionDocumentMetadata,
@@ -75,15 +79,42 @@ export class Documents implements SdkDocuments {
         }).then(handleResponse);
     }
 
-    async delete(documentId: number): Promise<SessionDocument> {
-        return fetch(`${this.api}/${documentId}`, {
-            method: 'DELETE',
-        }).then(handleResponse);
+    populateMetadata(rawContent: string, data: SessionDocumentMetadata): string {
+        let final = rawContent;
+
+        for (const [key, value] of Object.entries(data.ingest)) {
+            const regex = new RegExp(`\\[metadata:${key}\\]`, 'g');
+            final = final.replace(regex, value);
+        }
+
+        return final;
     }
 
-    extractSignatures(options: {
-        rawContent: string;
-    }): Promise<{ key: string; signatureData: string }> {
-        throw new Error('Method not implemented.');
+    extractSignatures(rawContent: string): { [key: string]: string } {
+        const signaturePattern = /\[signature:(.+?)\]\((.+?)\)/g;
+        const signatures: { [key: string]: string } = {};
+
+        const isBase64 = (data: string) => {
+            if (data === '' || data.trim() === '') {
+                return false;
+            }
+
+            try {
+                atob(data.split(',')[1]);
+                return true;
+            } catch (err) {
+                return false;
+            }
+        };
+
+        for (const match of rawContent.matchAll(signaturePattern)) {
+            const key = match[1];
+            const signatureData = match[2];
+            signatures[key] = isBase64(signatureData) ? signatureData : '';
+
+            console.log(signatureData, isBase64(signatureData));
+        }
+
+        return signatures;
     }
 }

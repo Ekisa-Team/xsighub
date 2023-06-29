@@ -11,22 +11,14 @@
 
 1. Instalar `node_modules`.
 
-   ```sh
-   pnpm install
-   ```
-
-2. Ejecutar aplicaciones.
-
-- Server (NestJS): [http://localhost:3000](http://localhost:3000)
-
   ```sh
-  pnpm server:dev
+  pnpm install
   ```
 
-- SDK (TS)
+2. Ejecutar proyecto.
 
   ```sh
-  pnpm sdk:dev
+  pnpm dev
   ```
 
 ## Ejecutar ejemplos

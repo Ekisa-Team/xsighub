@@ -1,0 +1,4 @@
+{
+  "extends": "@ekisa-xsighub/tsconfig/base.json",
+  "include": ["src/**/*"]
+}

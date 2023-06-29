@@ -1,5 +1,3 @@
-import { SocketEvent } from '../socket.io/socket-event';
-
 export type Session = {
     id: number;
     pairingKey: string;
@@ -51,14 +49,4 @@ export type SessionDocumentMetadata = {
 export type SessionDocumentSignature = {
     signatureName: string;
     signatureData: string;
-};
-
-export const __sessionSocketEvents__: SocketEvent<
-    'created' | 'updated' | 'paired' | 'unpaired' | 'destroyed'
-> = {
-    created: 'sessionCreated',
-    updated: 'sessionUpdated',
-    paired: 'sessionPaired',
-    unpaired: 'sessionUnpaired',
-    destroyed: 'sessionDestroyed',
 };

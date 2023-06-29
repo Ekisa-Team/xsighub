@@ -1,9 +1,11 @@
 import { XsighubLoggerService } from '@lib/logger';
 import { ApiExtras } from '@lib/types/api-extras';
 import {
+    MessageBody,
     OnGatewayConnection,
     OnGatewayDisconnect,
     OnGatewayInit,
+    SubscribeMessage,
     WebSocketGateway,
     WebSocketServer,
 } from '@nestjs/websockets';
@@ -88,6 +90,14 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this._server.emit('sessionDestroyed', {
             message: `Session destroyed: ${session.id}`,
             session,
+        });
+    }
+
+    @SubscribeMessage('openReference')
+    handleOpenReference(@MessageBody() body: unknown): void {
+        this._server.emit('referenceOpenedRequested', {
+            message: `Web client requested to open a reference on the mobile client`,
+            body,
         });
     }
 }
