@@ -3,7 +3,7 @@ version: '3.9'
 services:
   server:
     image: ghcr.io/ekisa-team/xsighub/server
-    container_name: xsighub-server-development
+    container_name: xsighub-server-production
     restart: always
     environment:
       APP_PORT: 3000
