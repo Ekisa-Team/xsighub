@@ -13,7 +13,7 @@ COPY . .
 
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
     pnpm install --frozen-lockfile && \
-    pnpm server:build && \
+    pnpm --filter server server build && \
     pnpm prune --prod
 
 # ;---------------;
