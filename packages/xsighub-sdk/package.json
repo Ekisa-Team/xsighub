@@ -1,6 +1,6 @@
 {
   "name": "@ekisa-xsighub/sdk",
-  "version": "0.2.1-beta",
+  "version": "0.2.2-beta",
   "description": "SDK de emparejamiento que permite la integración de la aplicación móvil con el servidor centralizado para capturar y transferir las firmas de los usuarios en tiempo real.",
   "author": "Ekisa-Team",
   "license": "MIT",

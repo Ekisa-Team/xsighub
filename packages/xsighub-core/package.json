@@ -1,6 +1,6 @@
 {
   "name": "@ekisa-xsighub/core",
-  "version": "0.2.1-beta",
+  "version": "0.2.2-beta",
   "description": "El motor central de Xsighub sin ajustes preestablecidos.",
   "author": "Ekisa-Team",
   "license": "MIT",
