@@ -8,7 +8,7 @@ export interface SdkSessions {
     findByPairingKey(pairingKey: string): Promise<Session>;
     pair(pairingKey: string): Promise<Session>;
     unpair(pairingKey: string): Promise<Session>;
-    destroy(): Promise<Session>;
+    destroy(pairingKey: string): Promise<Session>;
 }
 
 export class Sessions implements SdkSessions {
@@ -44,8 +44,8 @@ export class Sessions implements SdkSessions {
         }).then(handleResponse);
     }
 
-    async destroy(): Promise<Session> {
-        return fetch(`${this.api}`, {
+    async destroy(pairingKey: string): Promise<Session> {
+        return fetch(`${this.api}/${pairingKey}`, {
             method: 'DELETE',
         }).then(handleResponse);
     }

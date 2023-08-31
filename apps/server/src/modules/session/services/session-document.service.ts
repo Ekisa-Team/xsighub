@@ -46,7 +46,7 @@ export class SessionDocumentService {
         const created = await this._prisma.sessionDocument.create({ data });
 
         this._sessionGateway.handleSessionUpdated(
-            await this._sessionService.findById(reference.sessionId, { correlationId }),
+            await this._sessionService.updateTimestamp(reference.sessionId, { correlationId }),
             {
                 correlationId,
             },
@@ -102,7 +102,9 @@ export class SessionDocumentService {
         });
 
         this._sessionGateway.handleSessionUpdated(
-            await this._sessionService.findById(updated.reference.sessionId, { correlationId }),
+            await this._sessionService.updateTimestamp(updated.reference.sessionId, {
+                correlationId,
+            }),
             {
                 correlationId,
             },
@@ -165,7 +167,9 @@ export class SessionDocumentService {
         }
 
         this._sessionGateway.handleSessionUpdated(
-            await this._sessionService.findById(document.reference.sessionId, { correlationId }),
+            await this._sessionService.updateTimestamp(document.reference.sessionId, {
+                correlationId,
+            }),
             {
                 correlationId,
             },
@@ -209,7 +213,9 @@ export class SessionDocumentService {
         });
 
         this._sessionGateway.handleSessionUpdated(
-            await this._sessionService.findById(updated.reference.sessionId, { correlationId }),
+            await this._sessionService.updateTimestamp(updated.reference.sessionId, {
+                correlationId,
+            }),
             {
                 correlationId,
             },
@@ -246,7 +252,9 @@ export class SessionDocumentService {
         });
 
         this._sessionGateway.handleSessionUpdated(
-            await this._sessionService.findById(deleted.reference.sessionId, { correlationId }),
+            await this._sessionService.updateTimestamp(deleted.reference.sessionId, {
+                correlationId,
+            }),
             {
                 correlationId,
             },

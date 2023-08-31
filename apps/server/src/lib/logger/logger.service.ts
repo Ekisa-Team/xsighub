@@ -7,14 +7,14 @@ import { XsighubLogMethod } from './interfaces/log-method.interface';
 })
 export class XsighubLoggerService extends PinoLogger {
     override info: XsighubLogMethod = (message: string, obj?: unknown, ...args: unknown[]): void =>
-        super.info(obj, message, args);
+        super.info(obj ?? {}, message, args);
 
     override error: XsighubLogMethod = (message: string, obj?: unknown, ...args: unknown[]) =>
-        super.error(obj, message, args);
+        super.error(obj ?? {}, message, args);
 
     override warn: XsighubLogMethod = (message: string, obj?: unknown, ...args: unknown[]) =>
-        super.warn(obj, message, args);
+        super.warn(obj ?? {}, message, args);
 
     override trace: XsighubLogMethod = (message: string, obj?: unknown, ...args: unknown[]) =>
-        super.trace(obj, message, args);
+        super.trace(obj ?? {}, message, args);
 }

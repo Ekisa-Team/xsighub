@@ -38,21 +38,8 @@ class SessionNotFoundByPairingKey extends XsighubException {
     }
 }
 
-class SessionAlreadyCreatedByIp extends XsighubException {
-    constructor(args: { clientIp: string }) {
-        const message = `La dirección IP ${args.clientIp} tiene una sesión existente. Por favor, asegúrese de destruir cualquier sesión existente antes de intentar crear una nueva.`;
-
-        super({
-            errorCode: SessionErrorCodes.SessionAlreadyCreatedByIp,
-            message,
-            status: HttpStatus.BAD_REQUEST,
-        });
-    }
-}
-
 export const sessionExceptions = {
     [SessionErrorCodes.SessionNotFoundById]: SessionNotFoundById,
     [SessionErrorCodes.SessionNotFoundByClientIp]: SessionNotFoundByClientIp,
     [SessionErrorCodes.SessionNotFoundByPairingKey]: SessionNotFoundByPairingKey,
-    [SessionErrorCodes.SessionAlreadyCreatedByIp]: SessionAlreadyCreatedByIp,
 };

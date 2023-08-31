@@ -1,6 +1,8 @@
 export type Session = {
     id: number;
     pairingKey: string;
+    createdAt: Date;
+    updatedAt: Date;
     connection?: SessionConnection | null;
     references?: SessionReference[];
 };

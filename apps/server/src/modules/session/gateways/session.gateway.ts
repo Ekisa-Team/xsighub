@@ -37,8 +37,8 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this._logger.info(`[Session] Client disconnected ${client.id}`);
     }
 
-    async handleSessionCreated(session: SessionDto, { correlationId }: ApiExtras) {
-        this._logger.info(`[${this.handleSessionCreated.name}]`, { correlationId });
+    async handleSessionCreated(session: SessionDto, extras: ApiExtras) {
+        this._logger.info(`[${this.handleSessionCreated.name}]`, extras);
 
         this._server.emit('sessionCreated', {
             message: `Session created: ${session.id}`,
@@ -48,14 +48,14 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
     async handleSessionUpdated(
         session: SessionDto,
-        { correlationId }: ApiExtras,
+        extras: ApiExtras,
         options: {
             source: 'session' | 'reference' | 'signature' | 'document';
             action: 'create' | 'update' | 'delete';
             data: SessionDto | SessionReferenceDto | SessionSignatureDto | SessionDocumentDto;
         },
     ) {
-        this._logger.info(`[${this.handleSessionUpdated.name}]`, { correlationId });
+        this._logger.info(`[${this.handleSessionUpdated.name}]`, extras);
 
         this._server.emit('sessionUpdated', {
             message: `Session updated: ${session.id}`,
@@ -66,8 +66,8 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         });
     }
 
-    async handleSessionPaired(session: SessionDto, { correlationId }: ApiExtras) {
-        this._logger.info(`[${this.handleSessionPaired.name}]`, { correlationId });
+    async handleSessionPaired(session: SessionDto, extras: ApiExtras) {
+        this._logger.info(`[${this.handleSessionPaired.name}]`, extras);
 
         this._server.emit('sessionPaired', {
             message: `Session paired: ${session.id}`,
@@ -75,8 +75,8 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         });
     }
 
-    async handleSessionUnpaired(session: SessionDto, { correlationId }: ApiExtras) {
-        this._logger.info(`[${this.handleSessionUnpaired.name}]`, { correlationId });
+    async handleSessionUnpaired(session: SessionDto, extras: ApiExtras) {
+        this._logger.info(`[${this.handleSessionUnpaired.name}]`, extras);
 
         this._server.emit('sessionUnpaired', {
             message: `Session unpaired: ${session.id}`,
@@ -89,7 +89,6 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
         this._server.emit('sessionDestroyed', {
             message: `Session destroyed: ${session.id}`,
-            session,
         });
     }
 

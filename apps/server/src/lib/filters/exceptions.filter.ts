@@ -15,7 +15,7 @@ export class ExceptionsFilter implements ExceptionFilter {
         if (exception instanceof HttpException) {
             status = exception.getStatus();
             message = exception.message;
-            responseMessage = (exception.getResponse() as any)['message'];
+            responseMessage = (exception.getResponse() as unknown)['message'];
             stack = exception.stack;
         }
 

@@ -53,7 +53,7 @@ export class SessionReferenceService {
         const created = await this._prisma.sessionReference.create({ data });
 
         this._sessionGateway.handleSessionUpdated(
-            await this._sessionService.findById(created.sessionId, { correlationId }),
+            await this._sessionService.updateTimestamp(created.sessionId, { correlationId }),
             {
                 correlationId,
             },
@@ -90,7 +90,7 @@ export class SessionReferenceService {
         });
 
         this._sessionGateway.handleSessionUpdated(
-            await this._sessionService.findById(updated.sessionId, { correlationId }),
+            await this._sessionService.updateTimestamp(updated.sessionId, { correlationId }),
             {
                 correlationId,
             },
@@ -124,7 +124,7 @@ export class SessionReferenceService {
         });
 
         this._sessionGateway.handleSessionUpdated(
-            await this._sessionService.findById(deleted.sessionId, { correlationId }),
+            await this._sessionService.updateTimestamp(deleted.sessionId, { correlationId }),
             {
                 correlationId,
             },

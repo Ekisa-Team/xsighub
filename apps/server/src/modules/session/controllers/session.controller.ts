@@ -71,13 +71,13 @@ export class SessionController {
         return this._sessionsService.unpair(pairingKey, { correlationId });
     }
 
-    @Delete()
+    @Delete(':pairingKey')
     destroy(
         @CorrelationId() correlationId: string,
-        @ClientIp() clientIp: string,
+        @Param('pairingKey') pairingKey: string,
     ): Promise<SessionDto> {
         this._logger.info(`[${this.destroy.name}]`, { correlationId });
 
-        return this._sessionsService.destroy(clientIp, { correlationId });
+        return this._sessionsService.destroy(pairingKey, { correlationId });
     }
 }

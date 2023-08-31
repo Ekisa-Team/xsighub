@@ -1,8 +1,9 @@
+import { BaseDtoWithTimestamps } from '@lib/dto';
 import { Session } from '@prisma/client';
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsNumber, MaxLength, MinLength } from 'class-validator';
 
-export class SessionDto implements Session {
+export class SessionDto extends BaseDtoWithTimestamps<number> implements Session {
     @Expose({ toClassOnly: true })
     @IsNotEmpty()
     id: number;

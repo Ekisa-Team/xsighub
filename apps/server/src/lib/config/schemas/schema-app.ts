@@ -24,6 +24,9 @@ export interface XsighubAppConfigSchema {
         enabled: boolean;
         value: number;
     };
+    xsighub: {
+        cleanupSessionInterval: string;
+    };
 }
 
 export const xsighubAppConfigSchema = registerAs('app', (): XsighubAppConfigSchema => {
@@ -49,6 +52,9 @@ export const xsighubAppConfigSchema = registerAs('app', (): XsighubAppConfigSche
             enabled: Joi.boolean().default(false),
             value: Joi.number().default(6000),
         }),
+        xsighub: Joi.object({
+            cleanupSessionInterval: Joi.string().default('7d'),
+        }),
     });
 
     const config: XsighubAppConfigSchema = {
@@ -70,6 +76,9 @@ export const xsighubAppConfigSchema = registerAs('app', (): XsighubAppConfigSche
         timeout: {
             enabled: convertToBoolean(process.env['APP_TIMEOUT_ENABLED']),
             value: convertToNumber(process.env['APP_TIMEOUT_VALUE']),
+        },
+        xsighub: {
+            cleanupSessionInterval: process.env['XSIGHUB_CLEANUP_SESSION_INTERVAL'],
         },
     };
 

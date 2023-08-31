@@ -1,8 +1,10 @@
+import { XsighubConfigService } from '@lib/config';
 import { generateKey } from '@lib/helpers';
 import { XsighubLoggerService } from '@lib/logger';
 import { PrismaService } from '@lib/prisma';
 import { ApiExtras } from '@lib/types/api-extras';
 import { Injectable } from '@nestjs/common';
+import ms from 'ms';
 import { SessionDto } from '../dtos/session.dto';
 import { sessionExceptions } from '../exceptions/session.exceptions';
 import { SessionGateway } from '../gateways/session.gateway';
@@ -11,6 +13,7 @@ import { SessionGateway } from '../gateways/session.gateway';
 export class SessionService {
     constructor(
         private readonly _logger: XsighubLoggerService,
+        private readonly _config: XsighubConfigService,
         private readonly _prisma: PrismaService,
         private readonly _sessionGateway: SessionGateway,
     ) {
@@ -24,19 +27,9 @@ export class SessionService {
     ): Promise<SessionDto> {
         this._logger.info(`[${this.create.name}]`, { correlationId });
 
-        const session = await this._prisma.session.findFirst({
-            where: {
-                connection: { clientIp },
-            },
-        });
-
-        if (session) {
-            throw new sessionExceptions.SessionAlreadyCreatedByIp({ clientIp });
-        }
-
         const created = await this._prisma.session.create({
             data: {
-                pairingKey: generateKey(6).toString(),
+                pairingKey: generateKey(6),
                 connection: {
                     create: {
                         clientIp,
@@ -44,20 +37,14 @@ export class SessionService {
                     },
                 },
             },
-            include: {
-                connection: true,
-                references: {
-                    include: {
-                        signatures: true,
-                        documents: true,
-                    },
-                },
-            },
         });
 
-        this._sessionGateway.handleSessionCreated(created, {
-            correlationId,
-        });
+        this._sessionGateway.handleSessionCreated(
+            await this.updateTimestamp(created.id, { correlationId }),
+            {
+                correlationId,
+            },
+        );
 
         return created;
     }
@@ -165,20 +152,14 @@ export class SessionService {
             where: {
                 pairingKey,
             },
-            include: {
-                connection: true,
-                references: {
-                    include: {
-                        signatures: true,
-                        documents: true,
-                    },
-                },
-            },
         });
 
-        await this._sessionGateway.handleSessionPaired(updated, {
-            correlationId,
-        });
+        await this._sessionGateway.handleSessionPaired(
+            await this.updateTimestamp(updated.id, { correlationId }),
+            {
+                correlationId,
+            },
+        );
 
         return updated;
     }
@@ -211,6 +192,38 @@ export class SessionService {
             where: {
                 pairingKey,
             },
+        });
+
+        await this._sessionGateway.handleSessionUnpaired(
+            await this.updateTimestamp(updated.id, { correlationId }),
+            {
+                correlationId,
+            },
+        );
+
+        return updated;
+    }
+
+    async updateTimestamp(sessionId: number, { correlationId }: ApiExtras): Promise<SessionDto> {
+        this._logger.info(`[${this.updateTimestamp.name}]`, { correlationId });
+
+        const session = await this._prisma.session.findUnique({
+            where: {
+                id: sessionId,
+            },
+        });
+
+        if (!session) {
+            throw new sessionExceptions.SessionNotFoundById({ sessionId });
+        }
+
+        return this._prisma.session.update({
+            data: {
+                updatedAt: new Date(),
+            },
+            where: {
+                id: sessionId,
+            },
             include: {
                 connection: true,
                 references: {
@@ -221,48 +234,53 @@ export class SessionService {
                 },
             },
         });
-
-        await this._sessionGateway.handleSessionUnpaired(updated, {
-            correlationId,
-        });
-
-        return updated;
     }
 
-    async destroy(clientIp: string, { correlationId }: ApiExtras): Promise<SessionDto> {
-        this._logger.info(`[${this.destroy.name}]`, { correlationId });
+    async destroy(pairingKey: string, extras?: ApiExtras): Promise<SessionDto> {
+        this._logger.info(`[${this.destroy.name}]`, { correlationId: extras?.correlationId });
 
-        const session = await this._prisma.session.findFirst({
+        const session = await this._prisma.session.findUnique({
             where: {
-                connection: {
-                    clientIp,
-                },
+                pairingKey,
             },
         });
 
         if (!session) {
-            throw new sessionExceptions.SessionNotFoundByClientIp({ clientIp });
+            throw new sessionExceptions.SessionNotFoundByPairingKey({ pairingKey });
         }
 
         const destroyed = await this._prisma.session.delete({
             where: {
                 pairingKey: session.pairingKey,
             },
-            include: {
-                connection: true,
-                references: {
-                    include: {
-                        signatures: true,
-                        documents: true,
-                    },
+        });
+
+        await this._sessionGateway.handleSessionDestroyed(destroyed, {
+            correlationId: extras?.correlationId,
+        });
+
+        return destroyed;
+    }
+
+    async cleanup(): Promise<{ cleanedUp: SessionDto[] }> {
+        console.log(this._config.app.xsighub.cleanupSessionInterval);
+
+        const inactivityThreshold = new Date(
+            Date.now() - ms(this._config.app.xsighub.cleanupSessionInterval),
+        );
+
+        const inactiveSessions = await this._prisma.session.findMany({
+            where: {
+                updatedAt: {
+                    lt: inactivityThreshold,
                 },
             },
         });
 
-        await this._sessionGateway.handleSessionDestroyed(destroyed, {
-            correlationId,
-        });
+        const cleanedUp = await Promise.all(
+            inactiveSessions.map((session) => this.destroy(session.pairingKey)),
+        );
 
-        return destroyed;
+        return { cleanedUp };
     }
 }
