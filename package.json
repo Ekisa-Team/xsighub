@@ -45,7 +45,7 @@
     "simple-git-hooks": "^2.8.1",
     "stylelint": "^15.4.0",
     "typescript": "^5.0.4",
-    "vite": "^4.2.1",
+    "vite": "^4.2.3",
     "vitest": "^0.29.8"
   }
 }
