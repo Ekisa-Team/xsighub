@@ -19,12 +19,11 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,vue,svelte}": [
-      "pnpm eslint:fix",
-      "pnpm prettier"
+      "pnpm format",
+      "pnpm lint"
     ],
-    "*.{svelte,vue,tsx,css,pcss,less,scss,sass}": [
-      "pnpm stylelint:fix",
-      "pnpm prettier"
+    "*.{html,json,md,yml,yaml}": [
+      "pnpm format"
     ]
   },
   "devDependencies": {
