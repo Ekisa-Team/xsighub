@@ -23,12 +23,12 @@ export const __webEvents__: SocketEvent<'openReference'> = {
 };
 
 type OpenReferenceStandaloneRequest = {
-    kind: 'standalone' | 'document';
+    kind: 'standalone';
     referenceId: number;
 };
 
 type OpenReferenceDocumentRequest = {
-    kind: 'standalone' | 'document';
+    kind: 'document';
     referenceId: number;
     documentId: number;
 };
