@@ -88,6 +88,10 @@ export class ReferenceDocumentsComponent {
                 this._xsighubService.client.documents.populateMetadata(rawContent, {
                     ingest: JSON.parse(metadata || '{}'),
                 }),
+                {
+                    mangle: false,
+                    headerIds: false,
+                },
             ),
         );
     };
