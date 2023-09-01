@@ -1,13 +1,13 @@
 {
   "name": "xsighub",
-  "version": "0.2.3-beta",
+  "version": "0.3.0",
   "description": "Sistema Hub para capturar, transferir y mostrar las firmas de los usuarios en aplicaciones móviles y web en tiempo real.",
   "author": "Ekisa-Team",
   "license": "ISC",
   "main": "index.js",
   "scripts": {
     "postinstall": "npx simple-git-hooks",
-    "build": "pnpm -r --parallel run build",
+    "build": "pnpm -r --parallel --filter='!angular' run build",
     "dev": " pnpm -r --parallel run dev",
     "test": "pnpm -r --parallel run test",
     "lint": "pnpm -r --parallel run lint",
