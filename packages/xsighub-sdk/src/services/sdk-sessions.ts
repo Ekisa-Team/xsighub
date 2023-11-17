@@ -21,32 +21,53 @@ export class Sessions implements SdkSessions {
     async create(): Promise<Session> {
         return fetch(`${this.api}`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-xsighub-client-id': this.config.clientId,
+            },
         }).then(handleResponse);
     }
 
     async findByIpAddress(): Promise<Session> {
-        return fetch(`${this.api}`).then(handleResponse);
+        return fetch(`${this.api}`, {
+            headers: {
+                'x-xsighub-client-id': this.config.clientId,
+            },
+        }).then(handleResponse);
     }
 
     async findByPairingKey(pairingKey: string): Promise<Session> {
-        return fetch(`${this.api}/${pairingKey}`).then(handleResponse);
+        return fetch(`${this.api}/${pairingKey}`, {
+            headers: {
+                'x-xsighub-client-id': this.config.clientId,
+            },
+        }).then(handleResponse);
     }
 
     async pair(pairingKey: string): Promise<Session> {
         return fetch(`${this.api}/${pairingKey}/pair`, {
             method: 'PATCH',
+            headers: {
+                'x-xsighub-client-id': this.config.clientId,
+            },
         }).then(handleResponse);
     }
 
     async unpair(pairingKey: string): Promise<Session> {
         return fetch(`${this.api}/${pairingKey}/unpair`, {
             method: 'PATCH',
+            headers: {
+                'x-xsighub-client-id': this.config.clientId,
+            },
         }).then(handleResponse);
     }
 
     async destroy(pairingKey: string): Promise<Session> {
         return fetch(`${this.api}/${pairingKey}`, {
             method: 'DELETE',
+            headers: {
+                'x-xsighub-client-id': this.config.clientId,
+            },
         }).then(handleResponse);
     }
 }

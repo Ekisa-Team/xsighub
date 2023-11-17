@@ -18,6 +18,10 @@ import { ReferencesComponent } from './references/references.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { XsighubService } from './xsighub.service';
 
+type SocketHandshakeEvent = {
+    clientId: string;
+};
+
 type SocketEvent = {
     message: string;
     session: Session;
@@ -65,18 +69,6 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        const pairingKey = this.pairingKey();
-
-        if (pairingKey) {
-            this._xsighubService.client.sessions
-                .findByPairingKey(pairingKey)
-                .then((session) => this.session.set(session))
-                .catch((error) => {
-                    console.warn(error);
-                    this._cleanupSession();
-                });
-        }
-
         this._setupSocketEvents();
     }
 
@@ -118,6 +110,28 @@ export class AppComponent implements OnInit {
     }
 
     private _setupSocketEvents(): void {
+        this._socket
+            .fromEvent<SocketHandshakeEvent>(__serverEvents__.handshakeInstantiated)
+            .subscribe(({ clientId }) => {
+                this._xsighubService.clientId = clientId;
+                localStorage.setItem('clientId', clientId);
+
+                const pairingKey = this.pairingKey();
+                if (pairingKey) {
+                    this._xsighubService.client.sessions
+                        .findByPairingKey(pairingKey)
+                        .then((session) => this.session.set(session))
+                        .catch((error) => {
+                            console.warn(error);
+                            this._cleanupSession();
+                        });
+                }
+            });
+
+        this._socket
+            .fromEvent(__serverEvents__.handshakeInterrupted)
+            .subscribe(() => localStorage.removeItem('clientId'));
+
         [
             __serverEvents__.sessionCreated,
             __serverEvents__.sessionPaired,

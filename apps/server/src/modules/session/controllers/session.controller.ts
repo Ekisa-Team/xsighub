@@ -1,4 +1,4 @@
-import { ClientIp, CorrelationId, UserAgent } from '@lib/decorators';
+import { ClientId, ClientIp, CorrelationId, UserAgent } from '@lib/decorators';
 import { XsighubLoggerService } from '@lib/logger';
 import { ApiVersion } from '@lib/types';
 import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
@@ -24,60 +24,66 @@ export class SessionController {
     create(
         @CorrelationId() correlationId: string,
         @ClientIp() clientIp: string,
+        @ClientId() clientId: string,
         @UserAgent() userAgent: UAParser.IResult,
     ): Promise<SessionDto> {
         this._logger.info(`[${this.create.name}]`, { correlationId });
 
-        return this._sessionsService.create(clientIp, userAgent.ua, { correlationId });
+        return this._sessionsService.create(clientIp, userAgent.ua, { correlationId, clientId });
     }
 
     @Get()
     findByIpAddress(
         @CorrelationId() correlationId: string,
         @ClientIp() clientIp: string,
+        @ClientId() clientId: string,
     ): Promise<SessionDto> {
         this._logger.info(`[${this.findByIpAddress.name}]`, { correlationId });
 
-        return this._sessionsService.findByIpAddress(clientIp, { correlationId });
+        return this._sessionsService.findByIpAddress(clientIp, { correlationId, clientId });
     }
 
     @Get(':pairingKey')
     findByPairingKey(
         @CorrelationId() correlationId: string,
+        @ClientId() clientId: string,
         @Param('pairingKey') pairingKey: string,
     ): Promise<SessionDto> {
         this._logger.info(`[${this.findByPairingKey.name}]`, { correlationId });
 
-        return this._sessionsService.findByPairingKey(pairingKey, { correlationId });
+        return this._sessionsService.findByPairingKey(pairingKey, { correlationId, clientId });
     }
 
     @Patch(':pairingKey/pair')
     pair(
         @CorrelationId() correlationId: string,
+        @ClientId() clientId: string,
         @Param('pairingKey') pairingKey: string,
     ): Promise<SessionDto> {
         this._logger.info(`[${this.pair.name}]`, { correlationId });
 
-        return this._sessionsService.pair(pairingKey, { correlationId });
+        return this._sessionsService.pair(pairingKey, { correlationId, clientId });
     }
 
     @Patch(':pairingKey/unpair')
     unpair(
         @CorrelationId() correlationId: string,
+        @ClientId() clientId: string,
         @Param('pairingKey') pairingKey: string,
     ): Promise<SessionDto> {
         this._logger.info(`[${this.unpair.name}]`, { correlationId });
 
-        return this._sessionsService.unpair(pairingKey, { correlationId });
+        return this._sessionsService.unpair(pairingKey, { correlationId, clientId });
     }
 
     @Delete(':pairingKey')
     destroy(
         @CorrelationId() correlationId: string,
+        @ClientId() clientId: string,
         @Param('pairingKey') pairingKey: string,
     ): Promise<SessionDto> {
         this._logger.info(`[${this.destroy.name}]`, { correlationId });
 
-        return this._sessionsService.destroy(pairingKey, { correlationId });
+        return this._sessionsService.destroy(pairingKey, { correlationId, clientId });
     }
 }

@@ -1,4 +1,4 @@
-import { CorrelationId } from '@lib/decorators';
+import { ClientId, CorrelationId } from '@lib/decorators';
 import { XsighubLoggerService } from '@lib/logger';
 import { ApiVersion } from '@lib/types';
 import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
@@ -27,31 +27,34 @@ export class SessionReferenceController {
     @Post()
     create(
         @CorrelationId() correlationId: string,
+        @ClientId() clientId: string,
         @Body() data: SessionReferenceCreateDto,
     ): Promise<SessionReferenceDto> {
         this._logger.info(`[${this.create.name}]`, { correlationId });
 
-        return this._sessionReferenceService.create(data, { correlationId });
+        return this._sessionReferenceService.create(data, { correlationId, clientId });
     }
 
     @Put(':referenceId')
     update(
         @CorrelationId() correlationId: string,
+        @ClientId() clientId: string,
         @Param('referenceId') referenceId: number,
         @Body() data: SessionReferenceUpdateDto,
     ): Promise<SessionReferenceDto> {
         this._logger.info(`[${this.delete.name}]`, { correlationId });
 
-        return this._sessionReferenceService.update(referenceId, data, { correlationId });
+        return this._sessionReferenceService.update(referenceId, data, { correlationId, clientId });
     }
 
     @Delete(':referenceId')
     delete(
         @CorrelationId() correlationId: string,
+        @ClientId() clientId: string,
         @Param('referenceId') referenceId: number,
     ): Promise<SessionReferenceDto> {
         this._logger.info(`[${this.delete.name}]`, { correlationId });
 
-        return this._sessionReferenceService.delete(referenceId, { correlationId });
+        return this._sessionReferenceService.delete(referenceId, { correlationId, clientId });
     }
 }

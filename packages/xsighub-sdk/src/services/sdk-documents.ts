@@ -31,13 +31,18 @@ export class Documents implements SdkDocuments {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'x-xsighub-client-id': this.config.clientId,
             },
             body: JSON.stringify(data),
         }).then(handleResponse);
     }
 
     async findById(documentId: number): Promise<SessionDocument> {
-        return fetch(`${this.api}/${documentId}`).then(handleResponse);
+        return fetch(`${this.api}/${documentId}`, {
+            headers: {
+                'x-xsighub-client-id': this.config.clientId,
+            },
+        }).then(handleResponse);
     }
 
     async update(documentId: number, data: SessionDocument): Promise<SessionDocument> {
@@ -45,6 +50,7 @@ export class Documents implements SdkDocuments {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'x-xsighub-client-id': this.config.clientId,
             },
             body: JSON.stringify(data),
         }).then(handleResponse);
@@ -55,6 +61,7 @@ export class Documents implements SdkDocuments {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'x-xsighub-client-id': this.config.clientId,
             },
             body: JSON.stringify(data),
         }).then(handleResponse);
@@ -63,6 +70,9 @@ export class Documents implements SdkDocuments {
     async delete(documentId: number): Promise<SessionDocument> {
         return fetch(`${this.api}/${documentId}`, {
             method: 'DELETE',
+            headers: {
+                'x-xsighub-client-id': this.config.clientId,
+            },
         }).then(handleResponse);
     }
 
@@ -74,6 +84,7 @@ export class Documents implements SdkDocuments {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'x-xsighub-client-id': this.config.clientId,
             },
             body: JSON.stringify(data),
         }).then(handleResponse);

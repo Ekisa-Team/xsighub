@@ -24,13 +24,18 @@ export class Signatures implements SdkSignatures {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'x-xsighub-client-id': this.config.clientId,
             },
             body: JSON.stringify(data),
         }).then(handleResponse);
     }
 
     async findById(signatureId: number): Promise<SessionSignature> {
-        return fetch(`${this.api}/${signatureId}`).then(handleResponse);
+        return fetch(`${this.api}/${signatureId}`, {
+            headers: {
+                'x-xsighub-client-id': this.config.clientId,
+            },
+        }).then(handleResponse);
     }
 
     async update(signatureId: number, data: SessionSignature): Promise<SessionSignature> {
@@ -38,6 +43,7 @@ export class Signatures implements SdkSignatures {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'x-xsighub-client-id': this.config.clientId,
             },
             body: JSON.stringify(data),
         }).then(handleResponse);
@@ -51,6 +57,7 @@ export class Signatures implements SdkSignatures {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'x-xsighub-client-id': this.config.clientId,
             },
             body: JSON.stringify(data),
         }).then(handleResponse);
@@ -59,6 +66,9 @@ export class Signatures implements SdkSignatures {
     async delete(signatureId: number): Promise<SessionSignature> {
         return fetch(`${this.api}/${signatureId}`, {
             method: 'DELETE',
+            headers: {
+                'x-xsighub-client-id': this.config.clientId,
+            },
         }).then(handleResponse);
     }
 }

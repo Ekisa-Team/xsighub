@@ -27,7 +27,7 @@ export class SessionDocumentService {
 
     async create(
         data: SessionDocumentCreateDto,
-        { correlationId }: ApiExtras,
+        { correlationId, clientId }: ApiExtras,
     ): Promise<SessionDocumentDto> {
         this._logger.info(`[${this.create.name}]`, { correlationId });
 
@@ -46,9 +46,13 @@ export class SessionDocumentService {
         const created = await this._prisma.sessionDocument.create({ data });
 
         this._sessionGateway.handleSessionUpdated(
-            await this._sessionService.updateTimestamp(reference.sessionId, { correlationId }),
+            await this._sessionService.updateTimestamp(reference.sessionId, {
+                correlationId,
+                clientId,
+            }),
             {
                 correlationId,
+                clientId,
             },
             {
                 source: 'document',
@@ -79,7 +83,7 @@ export class SessionDocumentService {
     async update(
         documentId: number,
         data: SessionDocumentUpdateDto,
-        { correlationId }: ApiExtras,
+        { correlationId, clientId }: ApiExtras,
     ): Promise<SessionDocumentDto> {
         this._logger.info(`[${this.update.name}]`, { correlationId });
 
@@ -104,9 +108,11 @@ export class SessionDocumentService {
         this._sessionGateway.handleSessionUpdated(
             await this._sessionService.updateTimestamp(updated.reference.sessionId, {
                 correlationId,
+                clientId,
             }),
             {
                 correlationId,
+                clientId,
             },
             {
                 source: 'document',
@@ -121,7 +127,7 @@ export class SessionDocumentService {
     async attachSignature(
         documentId: number,
         data: SessionDocumentSignatureCreateDto,
-        { correlationId }: ApiExtras,
+        { correlationId, clientId }: ApiExtras,
     ): Promise<SessionDocumentDto> {
         this._logger.info(`[${this.update.name}]`, { correlationId });
 
@@ -169,9 +175,11 @@ export class SessionDocumentService {
         this._sessionGateway.handleSessionUpdated(
             await this._sessionService.updateTimestamp(document.reference.sessionId, {
                 correlationId,
+                clientId,
             }),
             {
                 correlationId,
+                clientId,
             },
             {
                 source: 'document',
@@ -186,7 +194,7 @@ export class SessionDocumentService {
     async loadMetadata(
         documentId: number,
         { ingest }: SessionDocumentMetadataLoadDto,
-        { correlationId }: ApiExtras,
+        { correlationId, clientId }: ApiExtras,
     ): Promise<SessionDocumentDto> {
         this._logger.info(`[${this.loadMetadata.name}]`, { correlationId });
 
@@ -215,9 +223,11 @@ export class SessionDocumentService {
         this._sessionGateway.handleSessionUpdated(
             await this._sessionService.updateTimestamp(updated.reference.sessionId, {
                 correlationId,
+                clientId,
             }),
             {
                 correlationId,
+                clientId,
             },
             {
                 source: 'document',
@@ -229,7 +239,10 @@ export class SessionDocumentService {
         return updated;
     }
 
-    async delete(documentId: number, { correlationId }: ApiExtras): Promise<SessionDocumentDto> {
+    async delete(
+        documentId: number,
+        { correlationId, clientId }: ApiExtras,
+    ): Promise<SessionDocumentDto> {
         this._logger.info(`[${this.delete.name}]`, { correlationId });
 
         const document = await this._prisma.sessionDocument.findUnique({
@@ -254,9 +267,11 @@ export class SessionDocumentService {
         this._sessionGateway.handleSessionUpdated(
             await this._sessionService.updateTimestamp(deleted.reference.sessionId, {
                 correlationId,
+                clientId,
             }),
             {
                 correlationId,
+                clientId,
             },
             {
                 source: 'document',

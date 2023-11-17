@@ -3,6 +3,8 @@ export type SocketEvent<EventName extends string> = {
 };
 
 export const __serverEvents__: SocketEvent<
+    | 'handshakeInstantiated'
+    | 'handshakeInterrupted'
     | 'sessionCreated'
     | 'sessionUpdated'
     | 'sessionPaired'
@@ -10,6 +12,8 @@ export const __serverEvents__: SocketEvent<
     | 'sessionDestroyed'
     | 'referenceOpenedRequested'
 > = {
+    handshakeInstantiated: 'handshakeInstantiated',
+    handshakeInterrupted: 'handshakeInterrupted',
     sessionCreated: 'sessionCreated',
     sessionUpdated: 'sessionUpdated',
     sessionPaired: 'sessionPaired',

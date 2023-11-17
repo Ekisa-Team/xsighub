@@ -23,7 +23,7 @@ export class SessionService {
     async create(
         clientIp: string,
         userAgent: string,
-        { correlationId }: ApiExtras,
+        { correlationId, clientId }: ApiExtras,
     ): Promise<SessionDto> {
         this._logger.info(`[${this.create.name}]`, { correlationId });
 
@@ -40,9 +40,10 @@ export class SessionService {
         });
 
         this._sessionGateway.handleSessionCreated(
-            await this.updateTimestamp(created.id, { correlationId }),
+            await this.updateTimestamp(created.id, { correlationId, clientId }),
             {
                 correlationId,
+                clientId,
             },
         );
 
@@ -124,7 +125,7 @@ export class SessionService {
         return session;
     }
 
-    async pair(pairingKey: string, { correlationId }: ApiExtras): Promise<SessionDto> {
+    async pair(pairingKey: string, { correlationId, clientId }: ApiExtras): Promise<SessionDto> {
         this._logger.info(`[${this.unpair.name}]`, { correlationId });
 
         const session = await this._prisma.session.findFirst({
@@ -155,16 +156,17 @@ export class SessionService {
         });
 
         await this._sessionGateway.handleSessionPaired(
-            await this.updateTimestamp(updated.id, { correlationId }),
+            await this.updateTimestamp(updated.id, { correlationId, clientId }),
             {
                 correlationId,
+                clientId,
             },
         );
 
         return updated;
     }
 
-    async unpair(pairingKey: string, { correlationId }: ApiExtras): Promise<SessionDto> {
+    async unpair(pairingKey: string, { correlationId, clientId }: ApiExtras): Promise<SessionDto> {
         this._logger.info(`[${this.unpair.name}]`, { correlationId });
 
         const session = await this._prisma.session.findFirst({
@@ -195,9 +197,10 @@ export class SessionService {
         });
 
         await this._sessionGateway.handleSessionUnpaired(
-            await this.updateTimestamp(updated.id, { correlationId }),
+            await this.updateTimestamp(updated.id, { correlationId, clientId }),
             {
                 correlationId,
+                clientId,
             },
         );
 
@@ -257,6 +260,7 @@ export class SessionService {
 
         await this._sessionGateway.handleSessionDestroyed(destroyed, {
             correlationId: extras?.correlationId,
+            clientId: extras?.clientId,
         });
 
         return destroyed;

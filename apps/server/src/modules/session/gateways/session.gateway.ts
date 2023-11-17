@@ -15,6 +15,8 @@ import { SessionReferenceDto } from '../dtos/session-reference.dto';
 import { SessionSignatureDto } from '../dtos/session-signature.dto';
 import { SessionDto } from '../dtos/session.dto';
 
+const clients = new Map<string, Socket>([]);
+
 @WebSocketGateway({
     namespace: 'sessions',
     cors: true,
@@ -31,16 +33,22 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
     handleConnection(client: Socket) {
         this._logger.info(`[Session] Client connected ${client.id}`);
+        clients.set(client.id, client);
+        client.emit('handshakeInstantiated', { clientId: client.id });
     }
 
     handleDisconnect(client: Socket) {
         this._logger.info(`[Session] Client disconnected ${client.id}`);
+        clients.delete(client.id);
+        client.emit('handshakeInterrupted');
     }
 
     async handleSessionCreated(session: SessionDto, extras: ApiExtras) {
         this._logger.info(`[${this.handleSessionCreated.name}]`, extras);
 
-        this._server.emit('sessionCreated', {
+        const client = clients.get(extras.clientId);
+
+        client.emit('sessionCreated', {
             message: `Session created: ${session.id}`,
             session,
         });
@@ -57,7 +65,9 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     ) {
         this._logger.info(`[${this.handleSessionUpdated.name}]`, extras);
 
-        this._server.emit('sessionUpdated', {
+        const client = clients.get(extras.clientId);
+
+        client.emit('sessionUpdated', {
             message: `Session updated: ${session.id}`,
             session,
             source: options.source,
@@ -69,7 +79,9 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     async handleSessionPaired(session: SessionDto, extras: ApiExtras) {
         this._logger.info(`[${this.handleSessionPaired.name}]`, extras);
 
-        this._server.emit('sessionPaired', {
+        const client = clients.get(extras.clientId);
+
+        client.emit('sessionPaired', {
             message: `Session paired: ${session.id}`,
             session,
         });
@@ -78,17 +90,22 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     async handleSessionUnpaired(session: SessionDto, extras: ApiExtras) {
         this._logger.info(`[${this.handleSessionUnpaired.name}]`, extras);
 
-        this._server.emit('sessionUnpaired', {
+        const client = clients.get(extras.clientId);
+
+        client.emit('sessionUnpaired', {
             message: `Session unpaired: ${session.id}`,
             session,
         });
     }
 
-    async handleSessionDestroyed(session: SessionDto, { correlationId }: ApiExtras) {
-        this._logger.info(`[${this.handleSessionDestroyed.name}]`, { correlationId });
+    async handleSessionDestroyed(session: SessionDto, extras: ApiExtras) {
+        this._logger.info(`[${this.handleSessionDestroyed.name}]`, extras);
 
-        this._server.emit('sessionDestroyed', {
+        const client = clients.get(extras.clientId);
+
+        client.emit('sessionDestroyed', {
             message: `Session destroyed: ${session.id}`,
+            session,
         });
     }
 
