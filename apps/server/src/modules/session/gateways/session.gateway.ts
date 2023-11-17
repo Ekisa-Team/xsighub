@@ -1,6 +1,7 @@
 import { XsighubLoggerService } from '@lib/logger';
 import { ApiExtras } from '@lib/types/api-extras';
 import {
+    ConnectedSocket,
     MessageBody,
     OnGatewayConnection,
     OnGatewayDisconnect,
@@ -110,8 +111,8 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     }
 
     @SubscribeMessage('openReference')
-    handleOpenReference(@MessageBody() body: unknown): void {
-        this._server.emit('referenceOpenedRequested', {
+    handleOpenReference(@MessageBody() body: unknown, @ConnectedSocket() client: Socket): void {
+        client.emit('referenceOpenedRequested', {
             message: `Web client requested to open a reference on the mobile client`,
             body,
         });
