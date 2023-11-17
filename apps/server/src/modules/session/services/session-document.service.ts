@@ -27,7 +27,7 @@ export class SessionDocumentService {
 
     async create(
         data: SessionDocumentCreateDto,
-        { correlationId, clientId }: ApiExtras,
+        { correlationId }: ApiExtras,
     ): Promise<SessionDocumentDto> {
         this._logger.info(`[${this.create.name}]`, { correlationId });
 
@@ -48,11 +48,9 @@ export class SessionDocumentService {
         this._sessionGateway.handleSessionUpdated(
             await this._sessionService.updateTimestamp(reference.sessionId, {
                 correlationId,
-                clientId,
             }),
             {
                 correlationId,
-                clientId,
             },
             {
                 source: 'document',
@@ -83,7 +81,7 @@ export class SessionDocumentService {
     async update(
         documentId: number,
         data: SessionDocumentUpdateDto,
-        { correlationId, clientId }: ApiExtras,
+        { correlationId }: ApiExtras,
     ): Promise<SessionDocumentDto> {
         this._logger.info(`[${this.update.name}]`, { correlationId });
 
@@ -108,11 +106,9 @@ export class SessionDocumentService {
         this._sessionGateway.handleSessionUpdated(
             await this._sessionService.updateTimestamp(updated.reference.sessionId, {
                 correlationId,
-                clientId,
             }),
             {
                 correlationId,
-                clientId,
             },
             {
                 source: 'document',
@@ -127,7 +123,7 @@ export class SessionDocumentService {
     async attachSignature(
         documentId: number,
         data: SessionDocumentSignatureCreateDto,
-        { correlationId, clientId }: ApiExtras,
+        { correlationId }: ApiExtras,
     ): Promise<SessionDocumentDto> {
         this._logger.info(`[${this.update.name}]`, { correlationId });
 
@@ -175,11 +171,9 @@ export class SessionDocumentService {
         this._sessionGateway.handleSessionUpdated(
             await this._sessionService.updateTimestamp(document.reference.sessionId, {
                 correlationId,
-                clientId,
             }),
             {
                 correlationId,
-                clientId,
             },
             {
                 source: 'document',
@@ -194,7 +188,7 @@ export class SessionDocumentService {
     async loadMetadata(
         documentId: number,
         { ingest }: SessionDocumentMetadataLoadDto,
-        { correlationId, clientId }: ApiExtras,
+        { correlationId }: ApiExtras,
     ): Promise<SessionDocumentDto> {
         this._logger.info(`[${this.loadMetadata.name}]`, { correlationId });
 
@@ -223,11 +217,9 @@ export class SessionDocumentService {
         this._sessionGateway.handleSessionUpdated(
             await this._sessionService.updateTimestamp(updated.reference.sessionId, {
                 correlationId,
-                clientId,
             }),
             {
                 correlationId,
-                clientId,
             },
             {
                 source: 'document',
@@ -239,10 +231,7 @@ export class SessionDocumentService {
         return updated;
     }
 
-    async delete(
-        documentId: number,
-        { correlationId, clientId }: ApiExtras,
-    ): Promise<SessionDocumentDto> {
+    async delete(documentId: number, { correlationId }: ApiExtras): Promise<SessionDocumentDto> {
         this._logger.info(`[${this.delete.name}]`, { correlationId });
 
         const document = await this._prisma.sessionDocument.findUnique({
@@ -267,11 +256,9 @@ export class SessionDocumentService {
         this._sessionGateway.handleSessionUpdated(
             await this._sessionService.updateTimestamp(deleted.reference.sessionId, {
                 correlationId,
-                clientId,
             }),
             {
                 correlationId,
-                clientId,
             },
             {
                 source: 'document',

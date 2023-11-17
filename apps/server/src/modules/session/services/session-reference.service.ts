@@ -26,7 +26,7 @@ export class SessionReferenceService {
 
     async create(
         data: SessionReferenceCreateDto,
-        { correlationId, clientId }: ApiExtras,
+        { correlationId }: ApiExtras,
     ): Promise<SessionReferenceDto> {
         this._logger.info(`[${this.create.name}]`, { correlationId });
 
@@ -55,11 +55,9 @@ export class SessionReferenceService {
         this._sessionGateway.handleSessionUpdated(
             await this._sessionService.updateTimestamp(created.sessionId, {
                 correlationId,
-                clientId,
             }),
             {
                 correlationId,
-                clientId,
             },
             {
                 source: 'reference',
@@ -74,7 +72,7 @@ export class SessionReferenceService {
     async update(
         referenceId: number,
         data: SessionReferenceUpdateDto,
-        { correlationId, clientId }: ApiExtras,
+        { correlationId }: ApiExtras,
     ): Promise<SessionReferenceDto> {
         this._logger.info(`[${this.update.name}]`, { correlationId });
 
@@ -96,11 +94,9 @@ export class SessionReferenceService {
         this._sessionGateway.handleSessionUpdated(
             await this._sessionService.updateTimestamp(updated.sessionId, {
                 correlationId,
-                clientId,
             }),
             {
                 correlationId,
-                clientId,
             },
             {
                 source: 'reference',
@@ -112,10 +108,7 @@ export class SessionReferenceService {
         return updated;
     }
 
-    async delete(
-        referenceId: number,
-        { correlationId, clientId }: ApiExtras,
-    ): Promise<SessionReferenceDto> {
+    async delete(referenceId: number, { correlationId }: ApiExtras): Promise<SessionReferenceDto> {
         this._logger.info(`[${this.delete.name}]`, { correlationId });
 
         const reference = await this._prisma.sessionReference.findUnique({
@@ -137,11 +130,9 @@ export class SessionReferenceService {
         this._sessionGateway.handleSessionUpdated(
             await this._sessionService.updateTimestamp(deleted.sessionId, {
                 correlationId,
-                clientId,
             }),
             {
                 correlationId,
-                clientId,
             },
             {
                 source: 'reference',

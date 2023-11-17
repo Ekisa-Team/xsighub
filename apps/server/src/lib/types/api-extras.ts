@@ -1,1 +1,1 @@
-export type ApiExtras = { correlationId: string; clientId: string };
+export type ApiExtras = { correlationId: string };

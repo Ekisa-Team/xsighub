@@ -24,7 +24,6 @@ export class References implements SdkReferences {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-xsighub-client-id': this.config.clientId,
             },
             body: JSON.stringify(data),
         }).then(handleResponse);
@@ -35,7 +34,6 @@ export class References implements SdkReferences {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'x-xsighub-client-id': this.config.clientId,
             },
             body: JSON.stringify(data),
         }).then(handleResponse);
@@ -44,9 +42,6 @@ export class References implements SdkReferences {
     async delete(referenceId: number): Promise<SessionReference> {
         return fetch(`${this.api}/${referenceId}`, {
             method: 'DELETE',
-            headers: {
-                'x-xsighub-client-id': this.config.clientId,
-            },
         }).then(handleResponse);
     }
 }

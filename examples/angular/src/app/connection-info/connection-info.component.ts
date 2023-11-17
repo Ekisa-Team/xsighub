@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Session } from '@ekisa-xsighub/core';
 
 @Component({
@@ -11,6 +11,4 @@ import { Session } from '@ekisa-xsighub/core';
 })
 export class ConnectionInfoComponent {
     @Input({ required: true }) session!: Session;
-
-    clientId = signal(localStorage.getItem('clientId'));
 }

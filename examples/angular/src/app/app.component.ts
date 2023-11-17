@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild, effect, inject, signal } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    HostListener,
+    OnInit,
+    ViewChild,
+    effect,
+    inject,
+    signal,
+} from '@angular/core';
 import {
     OpenReferenceRequest,
     Session,
@@ -17,10 +26,6 @@ import { QrViewComponent } from './qr-view/qr-view.component';
 import { ReferencesComponent } from './references/references.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { XsighubService } from './xsighub.service';
-
-type SocketHandshakeEvent = {
-    clientId: string;
-};
 
 type SocketEvent = {
     message: string;
@@ -69,16 +74,46 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this._setupSocketEvents();
+        const pairingKey = this.pairingKey();
+
+        if (pairingKey) {
+            this._xsighubService.client.sessions
+                .findByPairingKey(pairingKey)
+                .then((session) => this.session.set(session))
+                .catch((error) => {
+                    console.warn(error);
+                    this._cleanupSession();
+                });
+        }
     }
 
-    createSession = () => this._xsighubService.client.sessions.create().catch(console.error);
+    @HostListener('window:beforeunload', ['$event'])
+    onBeforeUnload(): void {
+        this.destroySession();
+    }
 
-    destroySession = () =>
+    createSession(): void {
+        this._xsighubService.client.sessions
+            .create()
+            .then((session) => {
+                this.session.set(session);
+
+                this._socket.emit('handshake', {
+                    sessionId: session.id,
+                    client: 'web',
+                });
+
+                this._setupSocketEvents();
+            })
+            .catch(console.error);
+    }
+
+    destroySession(): void {
         this._xsighubService.client.sessions
             .destroy(this.pairingKey() ?? '')
             .then(() => this._cleanupSession())
             .catch(console.error);
+    }
 
     createReference(reference: SessionReference): void {
         this._xsighubService.client.references.create({
@@ -110,33 +145,7 @@ export class AppComponent implements OnInit {
     }
 
     private _setupSocketEvents(): void {
-        this._socket
-            .fromEvent<SocketHandshakeEvent>(__serverEvents__.handshakeInstantiated)
-            .subscribe(({ clientId }) => {
-                this._xsighubService.clientId = clientId;
-                localStorage.setItem('clientId', clientId);
-
-                const pairingKey = this.pairingKey();
-                if (pairingKey) {
-                    this._xsighubService.client.sessions
-                        .findByPairingKey(pairingKey)
-                        .then((session) => this.session.set(session))
-                        .catch((error) => {
-                            console.warn(error);
-                            this._cleanupSession();
-                        });
-                }
-            });
-
-        this._socket
-            .fromEvent(__serverEvents__.handshakeInterrupted)
-            .subscribe(() => localStorage.removeItem('clientId'));
-
-        [
-            __serverEvents__.sessionCreated,
-            __serverEvents__.sessionPaired,
-            __serverEvents__.sessionUnpaired,
-        ].forEach((event) =>
+        [__serverEvents__.sessionPaired, __serverEvents__.sessionUnpaired].forEach((event) =>
             this._socket
                 .fromEvent<SocketEvent>(event)
                 .pipe(

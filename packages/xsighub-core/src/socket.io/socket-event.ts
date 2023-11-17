@@ -28,11 +28,13 @@ export const __webEvents__: SocketEvent<'openReference'> = {
 
 type OpenReferenceStandaloneRequest = {
     kind: 'standalone';
+    sessionId: number;
     referenceId: number;
 };
 
 type OpenReferenceDocumentRequest = {
     kind: 'document';
+    sessionId: number;
     referenceId: number;
     documentId: number;
 };
