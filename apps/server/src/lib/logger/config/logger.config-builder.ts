@@ -3,9 +3,7 @@ import { Params as JinenLoggerConfig } from 'nestjs-pino';
 import { XsighubAppConfigSchema } from '../../config/schemas';
 import { XsighubHttpHeaders } from '../../http-headers';
 
-export const jinenLoggerConfigBuilder = (
-    config: XsighubAppConfigSchema['logging'],
-): JinenLoggerConfig => ({
+export const jinenLoggerConfigBuilder = (config: XsighubAppConfigSchema['logging']): JinenLoggerConfig => ({
     pinoHttp: {
         transport: config.enablePrettyLogs ? { target: 'pino-pretty' } : undefined,
         autoLogging: false,

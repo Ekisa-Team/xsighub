@@ -13,12 +13,7 @@ export class AppModule implements NestModule {
 
         const NEST_MODULES = [ThrottlerModule.forRootAsync(modulesConfig.throttlerModule())];
 
-        const APP_MODULES = [
-            XsighubLoggerModule.forRoot(),
-            XsighubConfigModule.forRoot(),
-            PrismaModule,
-            SessionModule,
-        ];
+        const APP_MODULES = [XsighubLoggerModule.forRoot(), XsighubConfigModule.forRoot(), PrismaModule, SessionModule];
 
         return {
             module: AppModule,

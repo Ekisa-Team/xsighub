@@ -32,10 +32,7 @@ export class SessionController {
     }
 
     @Get()
-    findByIpAddress(
-        @CorrelationId() correlationId: string,
-        @ClientIp() clientIp: string,
-    ): Promise<SessionDto> {
+    findByIpAddress(@CorrelationId() correlationId: string, @ClientIp() clientIp: string): Promise<SessionDto> {
         this._logger.info(`[${this.findByIpAddress.name}]`, { correlationId });
 
         return this._sessionsService.findByIpAddress(clientIp, { correlationId });
@@ -52,30 +49,21 @@ export class SessionController {
     }
 
     @Patch(':pairingKey/pair')
-    pair(
-        @CorrelationId() correlationId: string,
-        @Param('pairingKey') pairingKey: string,
-    ): Promise<SessionDto> {
+    pair(@CorrelationId() correlationId: string, @Param('pairingKey') pairingKey: string): Promise<SessionDto> {
         this._logger.info(`[${this.pair.name}]`, { correlationId });
 
         return this._sessionsService.pair(pairingKey, { correlationId });
     }
 
     @Patch(':pairingKey/unpair')
-    unpair(
-        @CorrelationId() correlationId: string,
-        @Param('pairingKey') pairingKey: string,
-    ): Promise<SessionDto> {
+    unpair(@CorrelationId() correlationId: string, @Param('pairingKey') pairingKey: string): Promise<SessionDto> {
         this._logger.info(`[${this.unpair.name}]`, { correlationId });
 
         return this._sessionsService.unpair(pairingKey, { correlationId });
     }
 
     @Delete(':pairingKey')
-    destroy(
-        @CorrelationId() correlationId: string,
-        @Param('pairingKey') pairingKey: string,
-    ): Promise<SessionDto> {
+    destroy(@CorrelationId() correlationId: string, @Param('pairingKey') pairingKey: string): Promise<SessionDto> {
         this._logger.info(`[${this.destroy.name}]`, { correlationId });
 
         return this._sessionsService.destroy(pairingKey, { correlationId });

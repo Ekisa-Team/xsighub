@@ -24,10 +24,7 @@ export class SessionReferenceService {
         this._logger.setContext(this.constructor.name);
     }
 
-    async create(
-        data: SessionReferenceCreateDto,
-        { correlationId }: ApiExtras,
-    ): Promise<SessionReferenceDto> {
+    async create(data: SessionReferenceCreateDto, { correlationId }: ApiExtras): Promise<SessionReferenceDto> {
         this._logger.info(`[${this.create.name}]`, { correlationId });
 
         const session = await this._prisma.session.findUnique({

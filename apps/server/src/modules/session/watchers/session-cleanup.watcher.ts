@@ -28,9 +28,7 @@ export class SessionCleanupWatcher {
 
                     this._logger.info(
                         `A total of ${cleanedUp.length} sessions were destroyed${
-                            cleanedUp.length
-                                ? ' (' + cleanedUp.map((r) => r.pairingKey).join(', ') + ').'
-                                : '.'
+                            cleanedUp.length ? ' (' + cleanedUp.map((r) => r.pairingKey).join(', ') + ').' : '.'
                         }`,
                     );
                 } catch (error) {

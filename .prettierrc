@@ -3,12 +3,10 @@
     "trailingComma": "all",
     "singleQuote": true,
     "singleAttributePerLine": true,
-    "printWidth": 100,
+    "printWidth": 120,
     "tabWidth": 4,
     "useTabs": false,
     "endOfLine": "auto",
-    "plugins": ["prettier-plugin-svelte"],
-    "pluginSearchDirs": ["."],
     "overrides": [
         {
             "files": ["*.md", "*.json", "*.yml", "*.yaml"],

@@ -31,7 +31,8 @@
     "Ekisa signature"
   ],
   "scripts": {
-    "build": "rimraf dist && unbuild",
+    "build": "unbuild",
+    "stub": "unbuild",
     "release": "pnpm build && pnpm publish --access public",
     "lint": "eslint .",
     "format": "prettier --write --ignore-path=../../.prettierignore ."
@@ -41,10 +42,9 @@
     "qrcode": "^1.5.3"
   },
   "devDependencies": {
-    "@types/qrcode": "^1.5.0",
     "@ekisa-xsighub/eslint-config": "workspace:^",
     "@ekisa-xsighub/tsconfig": "workspace:^",
-    "rimraf": "^5.0.0",
-    "unbuild": "^1.2.1"
+    "@types/qrcode": "^1.5.5",
+    "unbuild": "^2.0.0"
   }
 }

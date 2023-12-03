@@ -24,10 +24,7 @@ export class SessionSignatureService {
         this._logger.setContext(this.constructor.name);
     }
 
-    async create(
-        data: SessionSignatureCreateDto,
-        { correlationId }: ApiExtras,
-    ): Promise<SessionSignatureDto> {
+    async create(data: SessionSignatureCreateDto, { correlationId }: ApiExtras): Promise<SessionSignatureDto> {
         this._logger.info(`[${this.create.name}]`, { correlationId });
 
         const reference = await this._prisma.sessionReference.findUnique({
@@ -61,10 +58,7 @@ export class SessionSignatureService {
         return created;
     }
 
-    async findById(
-        signatureId: number,
-        { correlationId }: ApiExtras,
-    ): Promise<SessionSignatureDto> {
+    async findById(signatureId: number, { correlationId }: ApiExtras): Promise<SessionSignatureDto> {
         this._logger.info(`[${this.findById.name}]`, { correlationId });
 
         const signature = await this._prisma.sessionSignature.findFirst({

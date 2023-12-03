@@ -1,10 +1,4 @@
-import {
-    INestApplication,
-    Logger,
-    NestApplicationOptions,
-    ValidationPipe,
-    VersioningType,
-} from '@nestjs/common';
+import { INestApplication, Logger, NestApplicationOptions, ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerCustomOptions, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { Logger as PinoLogger } from 'nestjs-pino';
@@ -43,8 +37,7 @@ export class XsighubApiConfigBuilder {
     }
 
     withCors(): XsighubApiConfigBuilder {
-        const { enabled, allowedOrigin, allowedMethods, allowedHeaders } =
-            this._config.security.cors;
+        const { enabled, allowedOrigin, allowedMethods, allowedHeaders } = this._config.security.cors;
 
         if (enabled) {
             this._app.enableCors({
@@ -145,9 +138,7 @@ export class XsighubApiConfigBuilder {
         const { port } = this._config.app;
 
         return this._app.listen(port, '0.0.0.0', () => {
-            Logger.log(
-                `🚀 Application is running on: http://localhost:${port} - config: ${envFilePath}`,
-            );
+            Logger.log(`🚀 Application is running on: http://localhost:${port} - config: ${envFilePath}`);
         });
     }
 }

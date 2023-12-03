@@ -1,15 +1,7 @@
 import { PartialType, PickType } from '@nestjs/swagger';
 import { SessionReference } from '@prisma/client';
 import { Expose } from 'class-transformer';
-import {
-    IsEnum,
-    IsInt,
-    IsNotEmpty,
-    IsPositive,
-    IsString,
-    MaxLength,
-    ValidateIf,
-} from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, IsPositive, IsString, MaxLength, ValidateIf } from 'class-validator';
 import { SessionReferenceType } from '../enums/session-reference.enum';
 import { SessionDto } from './session.dto';
 

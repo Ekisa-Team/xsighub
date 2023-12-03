@@ -17,12 +17,7 @@ const CONTROLLERS = [
     SessionDocumentController,
 ];
 
-const SERVICES = [
-    SessionService,
-    SessionReferenceService,
-    SessionSignatureService,
-    SessionDocumentService,
-];
+const SERVICES = [SessionService, SessionReferenceService, SessionSignatureService, SessionDocumentService];
 
 const GATEWAYS = [SessionGateway];
 

@@ -20,11 +20,7 @@ export class SessionService {
         this._logger.setContext(this.constructor.name);
     }
 
-    async create(
-        clientIp: string,
-        userAgent: string,
-        { correlationId }: ApiExtras,
-    ): Promise<SessionDto> {
+    async create(clientIp: string, userAgent: string, { correlationId }: ApiExtras): Promise<SessionDto> {
         this._logger.info(`[${this.create.name}]`, { correlationId });
 
         const created = await this._prisma.session.create({
@@ -150,12 +146,9 @@ export class SessionService {
             },
         });
 
-        await this._sessionGateway.handleSessionPaired(
-            await this.updateTimestamp(updated.id, { correlationId }),
-            {
-                correlationId,
-            },
-        );
+        await this._sessionGateway.handleSessionPaired(await this.updateTimestamp(updated.id, { correlationId }), {
+            correlationId,
+        });
 
         return updated;
     }
@@ -190,12 +183,9 @@ export class SessionService {
             },
         });
 
-        await this._sessionGateway.handleSessionUnpaired(
-            await this.updateTimestamp(updated.id, { correlationId }),
-            {
-                correlationId,
-            },
-        );
+        await this._sessionGateway.handleSessionUnpaired(await this.updateTimestamp(updated.id, { correlationId }), {
+            correlationId,
+        });
 
         return updated;
     }
@@ -259,9 +249,7 @@ export class SessionService {
     }
 
     async cleanup(): Promise<{ cleanedUp: SessionDto[] }> {
-        const inactivityThreshold = new Date(
-            Date.now() - ms(this._config.app.xsighub.cleanupSessionInterval),
-        );
+        const inactivityThreshold = new Date(Date.now() - ms(this._config.app.xsighub.cleanupSessionInterval));
 
         const inactiveSessions = await this._prisma.session.findMany({
             where: {
@@ -271,9 +259,7 @@ export class SessionService {
             },
         });
 
-        const cleanedUp = await Promise.all(
-            inactiveSessions.map((session) => this.destroy(session.pairingKey)),
-        );
+        const cleanedUp = await Promise.all(inactiveSessions.map((session) => this.destroy(session.pairingKey)));
 
         return { cleanedUp };
     }

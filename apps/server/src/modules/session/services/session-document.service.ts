@@ -25,10 +25,7 @@ export class SessionDocumentService {
         this._logger.setContext(this.constructor.name);
     }
 
-    async create(
-        data: SessionDocumentCreateDto,
-        { correlationId }: ApiExtras,
-    ): Promise<SessionDocumentDto> {
+    async create(data: SessionDocumentCreateDto, { correlationId }: ApiExtras): Promise<SessionDocumentDto> {
         this._logger.info(`[${this.create.name}]`, { correlationId });
 
         const reference = await this._prisma.sessionReference.findUnique({

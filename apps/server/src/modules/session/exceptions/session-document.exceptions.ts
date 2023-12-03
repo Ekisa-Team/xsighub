@@ -28,6 +28,5 @@ class SessionDocumentSignatureNotFoundByName extends XsighubException {
 
 export const sessionDocumentExceptions = {
     [SessionDocumentErrorCodes.SessionDocumentNotFoundById]: SessionDocumentNotFoundById,
-    [SessionDocumentErrorCodes.SessionDocumentSignatureNotFoundByName]:
-        SessionDocumentSignatureNotFoundByName,
+    [SessionDocumentErrorCodes.SessionDocumentSignatureNotFoundByName]: SessionDocumentSignatureNotFoundByName,
 };

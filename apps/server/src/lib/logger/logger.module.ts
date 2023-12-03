@@ -14,8 +14,7 @@ export class XsighubLoggerModule {
             module: XsighubLoggerModule,
             imports: [
                 LoggerModule.forRootAsync({
-                    useFactory: async (config: XsighubConfigService) =>
-                        jinenLoggerConfigBuilder(config.app.logging),
+                    useFactory: async (config: XsighubConfigService) => jinenLoggerConfigBuilder(config.app.logging),
                     inject: [XsighubConfigService],
                 }),
             ],

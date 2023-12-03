@@ -31,10 +31,7 @@ export class SessionDocumentDto implements SessionDocument {
     referenceId: SessionReferenceDto['id'];
 }
 
-export class SessionDocumentCreateDto extends PickType(SessionDocumentDto, [
-    'rawContent',
-    'referenceId',
-] as const) {}
+export class SessionDocumentCreateDto extends PickType(SessionDocumentDto, ['rawContent', 'referenceId'] as const) {}
 
 export class SessionDocumentUpdateDto extends PartialType(SessionDocumentCreateDto) {}
 

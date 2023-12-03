@@ -1,0 +1,35 @@
+{
+	"name": "@jinen/{{name}}",
+	"type": "module",
+	"version": "0.0.0",
+	"private": true,
+	"description": "{{description}}",
+	"homepage": "https://github.com/JinenGroup/platform/tree/main/packages/{{name}}#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/JinenGroup/platform",
+		"directory": "packages/{{name}}"
+	},
+	"bugs": {
+		"url": "https://github.com/JinenGroup/platform/issues"
+	},
+	"sideEffects": false,
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"files": ["dist"],
+	"engines": {
+		"node": ">=18"
+	},
+	"scripts": {
+		"build": "unbuild",
+		"stub": "unbuild --stub"
+	}
+}

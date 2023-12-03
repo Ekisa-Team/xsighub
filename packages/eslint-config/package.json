@@ -3,10 +3,10 @@
   "version": "0.4.2",
   "main": "src/index.js",
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.27.0",
-    "@typescript-eslint/parser": "^5.27.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint": "^8.43.0"
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^8.10.0"
   },
   "publishConfig": {
     "access": "restricted"
