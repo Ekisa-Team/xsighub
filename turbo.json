@@ -10,14 +10,12 @@
       "outputs": ["dist/**"]
     },
     "dev": {
-      "dependsOn": ["^stub"],
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
     "test": {
       "outputs": ["coverage/**", "html/**"]
-    },
-    "lint": {},
-    "format": {}
+    }
   }
 }

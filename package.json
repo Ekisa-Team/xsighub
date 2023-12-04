@@ -11,8 +11,8 @@
     "stub": "turbo run stub",
     "dev": "turbo run dev",
     "test": "turbo run test",
-    "lint": "turbo run lint",
-    "format": "turbo run format",
+    "lint": "pnpm -r --parallel run lint",
+    "format": "pnpm -r --parallel run format",
     "gen:package": "turbo gen package"
   },
   "simple-git-hooks": {

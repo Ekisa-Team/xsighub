@@ -43,10 +43,7 @@ export class Signatures implements SdkSignatures {
         }).then(handleResponse);
     }
 
-    async loadMetadata(
-        documentId: number,
-        data: SessionSignatureMetadata,
-    ): Promise<SessionSignature> {
+    async loadMetadata(documentId: number, data: SessionSignatureMetadata): Promise<SessionSignature> {
         return fetch(`${this.api}/${documentId}/metadata/load`, {
             method: 'PATCH',
             headers: {

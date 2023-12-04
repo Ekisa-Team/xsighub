@@ -1,13 +1,4 @@
-import {
-    Qr,
-    References,
-    SdkQr,
-    SdkReferences,
-    SdkSessions,
-    SdkSignatures,
-    Sessions,
-    Signatures,
-} from './services';
+import { Qr, References, SdkQr, SdkReferences, SdkSessions, SdkSignatures, Sessions, Signatures } from './services';
 import { Documents, SdkDocuments } from './services/sdk-documents';
 import { SdkClientConfig } from './types';
 
@@ -31,9 +22,7 @@ const createSdkClient = (): SdkClient => {
 
     const assertInitialization = () => {
         if (!initialized) {
-            throw new Error(
-                'SdkClient is not initialized. Make sure to call the init(config) method first.',
-            );
+            throw new Error('SdkClient is not initialized. Make sure to call the init(config) method first.');
         }
     };
 

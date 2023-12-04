@@ -1,8 +1,4 @@
-import {
-    SessionDocument,
-    SessionDocumentMetadata,
-    SessionDocumentSignature,
-} from '@ekisa-xsighub/core';
+import { SessionDocument, SessionDocumentMetadata, SessionDocumentSignature } from '@ekisa-xsighub/core';
 import { handleResponse } from '../helpers';
 import { SdkClientConfig } from '../types/sdk-config.type';
 
@@ -67,10 +63,7 @@ export class Documents implements SdkDocuments {
         }).then(handleResponse);
     }
 
-    async loadMetadata(
-        documentId: number,
-        data: SessionDocumentMetadata,
-    ): Promise<SessionDocument> {
+    async loadMetadata(documentId: number, data: SessionDocumentMetadata): Promise<SessionDocument> {
         return fetch(`${this.api}/${documentId}/metadata/load`, {
             method: 'PATCH',
             headers: {
